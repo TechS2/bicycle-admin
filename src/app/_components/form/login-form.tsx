@@ -18,7 +18,7 @@ const formSchema = z.object({
         message: "Password is Required"
     }),
     email: z.string().email({
-        message: "Email is required"
+        message: "Email is Required"
     })
 })
 
@@ -46,6 +46,7 @@ export const LoginForm = () => {
             redirect: false,
         })
 
+        console.log(signInData)
         setSubmiting((prev) => !prev)
         if (signInData?.error)
             toast({
@@ -55,7 +56,7 @@ export const LoginForm = () => {
                 className:"bg-red-600 text-white"
             })
         if (!signInData?.error)
-            router.push("/")
+            router.push("/dashboard")
     }
     return (
         <Form {...form}>
