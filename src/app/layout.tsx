@@ -1,9 +1,10 @@
 import "@/styles/globals.css";
-
+import { Provider } from "./provider";
 import { cookies } from "next/headers";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "@/components/ui/toaster";
+import { SessionProvider } from "next-auth/react";
 
 
 export const metadata = {
@@ -20,10 +21,12 @@ export default function RootLayout({
   return (
     <html lang="en" >
       <body suppressHydrationWarning>
-        <TRPCReactProvider cookies={cookies().toString()}>
-          {children}
-          <Toaster/>
-        </TRPCReactProvider>
+        <Provider>
+          <TRPCReactProvider cookies={cookies().toString()}>
+            {children}
+            <Toaster />
+          </TRPCReactProvider>
+        </Provider>
       </body>
     </html>
   );

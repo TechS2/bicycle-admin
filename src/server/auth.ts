@@ -79,25 +79,23 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "email", type: "text", placeholder: "Abdul Rehman" },
+        email: { label: "email", type: "email", placeholder: "Abdul Rehman" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
+        
         if (!credentials?.email || !credentials?.password)
           return null
         
         const userInfo = await api.register.sellerInfo.query({ userName: credentials.email })
-
         if (!userInfo)
           return null
         
         const result: boolean = await compare(credentials.password, userInfo.password)
-
         if (!result)
           return null
-        
-        const paypal_token = await api.paypal.getAuthToken.query()
 
+        const paypal_token = await api.paypal.getAuthToken.query()
         if (!paypal_token)
           return null
         

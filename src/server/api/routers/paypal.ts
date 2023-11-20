@@ -64,7 +64,7 @@ export const paypalRouter = createTRPCRouter({
                             }
                         ],
                         "partner_config_override": {
-                            "return_url": "http://localhost:3000/dashboard/success",
+                            "return_url": "https://8610-103-103-43-236.ngrok-free.app/dashboard/success",
                         }
 
                     };
@@ -76,13 +76,6 @@ export const paypalRouter = createTRPCRouter({
                         Authorization: `Bearer ${ctx.session?.user.paypal_token}`,
                     };
                      const response = await axios.post(paypalApiUrl, data, { headers })
-                    await ctx.db.seller.create({
-                        data: {
-                            merchantId: '',
-                            trackingId: id,
-                            status: false
-                        }
-                    })
                     const url = response.data.links?.find((link: { rel: string; }) => link?.rel === 'action_url').href
                     return url
                 } catch (error) {
@@ -105,23 +98,13 @@ export const paypalRouter = createTRPCRouter({
                     },
                     data: {
                         merchantId: input.merchantId,
-                        status: true,
                     },
                 })
             }),
     
     getStatus:
         protectedProcedure
-        .query(async ({ctx})=>{
-
-            const response =  await ctx.db.seller.findMany({
-                where:{
-                    status:true,
-                }
-            })
-
-            if(response && response.length!=0)
-                return response
+        .query(({ctx})=>{
             return null
         })
 });

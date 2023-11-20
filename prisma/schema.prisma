@@ -76,7 +76,8 @@ model Order {
   captureId     String  @unique
   amount        Float
   status        Boolean @default(false)
-  paymentEmail  String
+  paymentEmail  String  @default("")
+  payerId       String  @default("")
   personalEmail String
   arrivalTime   String  @default("")
   firstName     String  @default("")
@@ -97,10 +98,10 @@ model Product {
 }
 
 model Seller {
-  id         Int     @id @default(autoincrement())
-  trackingId String  @unique
-  merchantId String
-  status     Boolean @default(false)
+  id                Int    @id @default(autoincrement())
+  trackingId        String @unique
+  merchantId        String
+  partner_client_id String
 }
 
 model SellerInfo {
