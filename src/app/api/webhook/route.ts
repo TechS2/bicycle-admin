@@ -40,6 +40,7 @@ export async function POST(req: NextRequest, _res: NextResponse) {
         data:{
           paymentEmail:jsonObject.resource.payer.email_address,
           payerId:jsonObject.resource.payer.payer_id,
+          paymentId:jsonObject.resource.purchase_units.payments.captures.id,
           status:true
         }
       })

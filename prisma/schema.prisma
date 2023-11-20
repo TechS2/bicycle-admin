@@ -83,6 +83,7 @@ model Order {
   firstName     String  @default("")
   lastName      String  @default("")
   option        String  @default("")
+  paymentId     String  @default("")
   Cart          Cart[]
 }
 
