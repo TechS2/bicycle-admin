@@ -103,6 +103,7 @@ model Seller {
   trackingId        String @unique
   merchantId        String
   partner_client_id String
+  email             String @unique
 }
 
 model SellerInfo {

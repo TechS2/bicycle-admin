@@ -12,7 +12,7 @@ export const paypalRouter = createTRPCRouter({
     getAuthToken:
         publicProcedure
             .query(async () => {
-                const username = process.env.PAYPAL_CLIENT;
+                const username = process.env.PAYPAL_CLIENT
                 const password = process.env.PAYPAL_SECERT
                 const base64Credentials = Buffer.from(`${username}:${password}`).toString('base64');
                 try {
@@ -64,9 +64,8 @@ export const paypalRouter = createTRPCRouter({
                             }
                         ],
                         "partner_config_override": {
-                            "return_url": "https://8610-103-103-43-236.ngrok-free.app/dashboard/success",
+                            "return_url": "https://96b9-103-103-43-236.ngrok-free.app/dashboard/success",   
                         }
-
                     };
 
                     const paypalApiUrl = 'https://api-m.sandbox.paypal.com/v2/customer/partner-referrals';
@@ -84,27 +83,40 @@ export const paypalRouter = createTRPCRouter({
                 }
             }),
 
-    updateSellerInfo:
+    createSellerInfo:
         publicProcedure
             .input(
                 z.object({
                     trackingId: z.string(),
-                    merchantId: z.string()
+                    merchantId: z.string(),
+                    email:z.any()
                 }))
             .mutation(async ({ ctx, input }) => {
-                await ctx.db.seller.update({
-                    where: {
-                        trackingId: input.trackingId,
-                    },
+                await ctx.db.seller.create({
                     data: {
-                        merchantId: input.merchantId,
+                        trackingId: input.trackingId,
+                        email:input.email,
+                        merchantId:"",
+                        partner_client_id:""
                     },
                 })
             }),
     
     getStatus:
         protectedProcedure
-        .query(({ctx})=>{
-            return null
+        .input(z.object({
+            email:z.any()
+        }))
+        .query(async ({ctx,input})=>{
+            if(!input.email)
+                return false
+            const response = await ctx.db.seller.findUnique({
+                where:{
+                    email: input.email
+                }
+            })
+            if(response)
+                return true
+            return false
         })
 });

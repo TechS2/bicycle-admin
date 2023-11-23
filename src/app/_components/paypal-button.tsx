@@ -4,13 +4,20 @@ import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import { BsPaypal } from "react-icons/bs"
 import { api } from "@/trpc/react"
+import { useRouter } from "next/navigation"
 
 export const PayPalButton = () => {
 
     const session = useSession()
-    const [isconnect, setConnect] = useState<boolean>(false)
+    const router  = useRouter()
+    const [isConnect, setConnect] = useState<boolean>(false)
 
-    const { data } = api.paypal.getStatus.useQuery()
+    console.log(session)
+    
+    if (!session)
+        router.push('/')
+
+    const { data } = api.paypal.getStatus.useQuery({email:session.data?.user.email})
 
     const { mutate } = api.paypal.connectToPayPal.useMutation({
         onSuccess: (data) => {
@@ -19,23 +26,19 @@ export const PayPalButton = () => {
     })
 
     useEffect(() => {
-
         if (data)
             setConnect(() => true)
     }, [data])
-
-    if (!session)
-        return (<>Cannot Access This Page</>)
-
+    
     const connect = () => {
         mutate()
     }
 
     return (
-        <button className="bg-green-700 hover:bg-white hover:text-green-700 hover:border-2 flex text-white text-3xl p-3 rounded-lg" onClick={connect} disabled={isconnect?true:false}>
+        <button className="bg-green-700 hover:bg-white hover:text-green-700 hover:border-2 flex text-white text-3xl p-3 rounded-lg" onClick={connect} disabled={isConnect?true:false}>
             <BsPaypal className="px-1" />
             <span className="px-2">
-                {isconnect? "Connected":"Connect"}
+                {isConnect? "Connected":"Connect"}
             </span>
         </button>
     )
