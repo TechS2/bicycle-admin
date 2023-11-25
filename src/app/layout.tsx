@@ -4,7 +4,6 @@ import { cookies } from "next/headers";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "@/components/ui/toaster";
-import { SessionProvider } from "next-auth/react";
 
 
 export const metadata = {
@@ -20,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" >
-      <body suppressHydrationWarning>
+      <body>
         <TRPCReactProvider cookies={cookies().toString()}>
           <Provider>
             {children}

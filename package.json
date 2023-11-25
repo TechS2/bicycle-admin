@@ -7,7 +7,7 @@
     "db:push": "prisma db push",
     "db:pull": "prisma db pull",
     "db:studio": "prisma studio",
-    "dev": "next dev -p 3000",
+    "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start"

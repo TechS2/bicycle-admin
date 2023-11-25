@@ -18,7 +18,7 @@ const formSchema = z.object({
         message: "Password is Required"
     }),
     email: z.string().email({
-        message: "Email is Required"
+        message: "Email is required"
     })
 })
 
@@ -46,7 +46,6 @@ export const LoginForm = () => {
             redirect: false,
         })
 
-        console.log(signInData)
         setSubmiting((prev) => !prev)
         if (signInData?.error)
             toast({
