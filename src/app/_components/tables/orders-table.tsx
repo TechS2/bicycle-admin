@@ -1,10 +1,11 @@
 'use client'
 import { api } from "@/trpc/react"
 import { addEuroSign } from "@/utils"
-import { Table, Pagination, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button } from "@nextui-org/react"
+import { Table, Pagination, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/react"
 import { debounce } from "lodash"
+import Link from "next/link"
 import { useState, useMemo } from "react"
-
+import {FaInfo} from 'react-icons/fa6'
 
 export const OrderTable = ()=>{
     const {data} = api.order.getAllOrders.useQuery()
@@ -73,13 +74,13 @@ export const OrderTable = ()=>{
                 }}
             >
                 <TableHeader >
-                    <TableColumn className='font-bold text-black'>Id</TableColumn>
-                    <TableColumn className='font-bold text-black'>Cart Id</TableColumn>
-                    <TableColumn className='font-bold text-black'>CaptureId</TableColumn>
-                    <TableColumn className='font-bold text-black'>Email(Personal)</TableColumn>
-                    <TableColumn className='font-bold text-black'>Email(Payment)</TableColumn>
-                    <TableColumn className='font-bold text-black'>Amount</TableColumn>
-                    <TableColumn className='font-bold text-black'>Action</TableColumn>
+                    <TableColumn className='text-base font-bold text-black'>Id</TableColumn>
+                    <TableColumn className='text-base font-bold text-black'>Cart Id</TableColumn>
+                    <TableColumn className='text-base font-bold text-black'>CaptureId</TableColumn>
+                    <TableColumn className='text-base font-bold text-black'>Email(Personal)</TableColumn>
+                    <TableColumn className='text-base font-bold text-black'>Email(Payment)</TableColumn>
+                    <TableColumn className='text-base font-bold text-black'>Amount</TableColumn>
+                    <TableColumn className='text-base font-bold text-black'>Action</TableColumn>
                 </TableHeader>
                 <TableBody items={items} emptyContent={'No Product to Display.'}>
                     {(item) => (
@@ -93,12 +94,13 @@ export const OrderTable = ()=>{
                             <TableCell>{item.paymentEmail}</TableCell>
                             <TableCell>{addEuroSign(String(item.amount))}</TableCell>
                             <TableCell>
-                                <Button
-                                    className="text-red-600 border-2 border-red-600 rounded-full p-2"
-
+                                <Link
+                                    href={`/dashboard/order/${item.id}`}
+                                    className="flex gap-1 justify-normal align-middle items-center bg-yellow-600 text-white p-3 w-fit"
                                 >
+                                    <FaInfo/>
                                     Detail
-                                </Button>
+                                </Link>
                             </TableCell>
                         </TableRow>
                     )
