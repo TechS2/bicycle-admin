@@ -63,15 +63,15 @@ export const authOptions: NextAuthOptions = {
   secret: "POKOq/ooMmBaUcsKQfOeWkhXzwo5CTQ/vTiCARhS1vQ=",
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: "credentials",
       credentials: {
         email: { label: "email", type: "email", placeholder: "Abdul Rehman" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         try {
+          console.log(credentials)
           if (!credentials?.email || !credentials?.password) return null;
-
           const userInfo = await api.register.sellerInfo.query({userName: credentials.email,});
 
           if (!userInfo) {
