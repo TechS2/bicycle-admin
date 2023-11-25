@@ -32,10 +32,12 @@ export const sellerRouter = createTRPCRouter({
             userName:z.string()
         }))
         .query(async ({ctx,input})=>{
-            return  await ctx.db.sellerInfo.findUnique({
+            const data =  await ctx.db.sellerInfo.findUnique({
                 where:{
                     userName:input.userName
                 }
             })
+            console.log(data)
+            return  data
         })
 })

@@ -77,12 +77,12 @@ model Order {
   amount        Float
   status        Boolean @default(false)
   paymentEmail  String  @default("")
-  payerId       String  @default("")
   personalEmail String
   arrivalTime   String  @default("")
   firstName     String  @default("")
   lastName      String  @default("")
   option        String  @default("")
+  payerId       String  @default("")
   paymentId     String  @default("")
   Cart          Cart[]
 }
