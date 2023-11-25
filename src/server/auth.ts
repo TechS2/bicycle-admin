@@ -66,7 +66,6 @@ export const authOptions: NextAuthOptions = {
       return token
     },
   },
-
   adapter: PrismaAdapter(db),
   session: {
     strategy: "jwt"
@@ -87,7 +86,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password)
           return null
         
-        const userInfo = await api.register.sellerInfo.query({ userName: credentials.email })
+        const userInfo = await api.register.sellerInfo.query({userName:credentials.email})
         if (!userInfo)
           return null
         

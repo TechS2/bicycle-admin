@@ -1,10 +1,8 @@
 import cloudinary from "@/server/_config/cloudinary";
-import next, { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
-import { NextFunction, Response, Request } from "express-serve-static-core";
+import { NextFunction, Response } from "express-serve-static-core";
 import { UploadApiResponse } from "cloudinary";
 import { File } from "buffer";
-import { buffer } from "stream/consumers";
 
 
 
