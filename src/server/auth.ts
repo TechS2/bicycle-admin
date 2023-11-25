@@ -72,19 +72,14 @@ export const authOptions: NextAuthOptions = {
         try {
           if (!credentials?.email || !credentials?.password) return null;
 
-          const userInfo :{id:number,userName:string,password:string} | null = await api.register.sellerInfo.query({
-            userName: credentials.email,
-          });
+          const userInfo = await api.register.sellerInfo.query({userName: credentials.email,});
 
           if (!userInfo) {
             console.error("User info not found");
             return null;
           }
 
-          const result: boolean = await compare(
-            credentials.password,
-            userInfo.password
-          );
+          const result: boolean = await compare(credentials.password,userInfo.password);
 
           if (!result) {
             console.error("Password comparison failed");
