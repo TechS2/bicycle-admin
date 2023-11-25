@@ -3,9 +3,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { NextFunction, Response } from "express-serve-static-core";
 import { UploadApiResponse } from "cloudinary";
 import { File } from "buffer";
+import { db } from "@/server/db";
 
 
 
+export async function GET(req:NextRequest,res:NextResponse){
+
+
+    const data = await db.product.findMany()
+
+    if(data)
+      return NextResponse.json(data)
+    return NextResponse.json({message:"Error"})
+}
 
 export async function POST(req: NextRequest, res: Response, next: NextFunction) {
 
