@@ -8,11 +8,9 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { Product } from "@prisma/client";
 
 export const productRouter = createTRPCRouter({
 
-  //! .input(z.object({ file: z.instanceof(File) }))
   insertOne:
     protectedProcedure
       .input(z.object({
@@ -51,5 +49,10 @@ export const productRouter = createTRPCRouter({
     protectedProcedure
       .query(async ({ ctx }) => {
         return  await ctx.db.product.findMany()
-      })
+      }),
+  getTesting:
+      publicProcedure
+      .query(async ({ ctx }) => {
+        return  await ctx.db.product.findMany()
+      }),
 });
