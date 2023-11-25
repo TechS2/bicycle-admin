@@ -21,14 +21,12 @@ export default function RootLayout({
   return (
     <html lang="en" >
       <body suppressHydrationWarning>
-
         <TRPCReactProvider cookies={cookies().toString()}>
           <Provider>
             {children}
             <Toaster />
           </Provider>
         </TRPCReactProvider>
-
       </body>
     </html>
   );

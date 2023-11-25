@@ -29,7 +29,7 @@ export const productRouter = createTRPCRouter({
 
           const randomNumber = Math.floor(Math.random() * 999999) + 1;
           const productCode = `P${randomNumber}`;
-          
+
           await ctx.db.product.create({
             data: {
               name: input.name,
@@ -37,7 +37,7 @@ export const productRouter = createTRPCRouter({
               image: input.image,
               price: input.price,
               size: input.size,
-              code:productCode.substring(0, 6)
+              code: productCode.substring(0, 6)
             }
           })
           return "Saved"
@@ -50,7 +50,6 @@ export const productRouter = createTRPCRouter({
   getAllProducts:
     protectedProcedure
       .query(async ({ ctx }) => {
-        const data: Product[] = await ctx.db.product.findMany()
-        return data
+        return  await ctx.db.product.findMany()
       })
 });

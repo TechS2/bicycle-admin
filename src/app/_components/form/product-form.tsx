@@ -8,7 +8,8 @@ import { api } from "@/trpc/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FieldValues, useForm } from "react-hook-form"
 import { z } from 'zod'
-
+import axios from 'axios'
+import { useState } from "react"
 const formSchema = z.object({
     product: z.string(),
     description: z.string(),
@@ -21,30 +22,37 @@ const formSchema = z.object({
 export const ProductForm = () => {
 
     const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema)
-    })  
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            product: '',
+            description: '',
+            price: 0,
+            image: undefined,
+            size: ''
+        }
+    })
 
-    const {mutate} = api.product.insertOne.useMutation({
+    const { mutate } = api.product.insertOne.useMutation({
         onSuccess: () => {
             form.reset()
             window.location.reload()
         }
     })
+    const [submiting,setSubmiting] = useState<boolean>(false)
 
     const formSubmitted = async (data: FieldValues) => {
-        const fileBase64: string = await new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = reject;
-            reader.readAsDataURL(data.image);
-        })
-        mutate({
-            name: data.product,
-            description: data.description,
-            price:String( data.price),
-            image: fileBase64,
-            size: data.size
-        })
+        setSubmiting((prev)=>!prev)
+        const formData = new FormData()
+        formData.append("image", data.image)
+        const response = await axios.post("/api/file", formData)
+            mutate({
+                name: data.product,
+                description: data.description,
+                price: String(data.price),
+                image: response.data.url,
+                size: data.size
+            })
+        setSubmiting((prev)=>!prev)
     }
     return (
         <Form {...form}>
@@ -82,10 +90,10 @@ export const ProductForm = () => {
                         <FormItem className="col-span-2">
                             <FormLabel className="text-base">Price</FormLabel>
                             <FormControl>
-                                <Input type="file"   onChange={(e) => {
-                                    if(e.target.files)
+                                <Input type="file" onChange={(e) => {
+                                    if (e.target.files)
                                         field.onChange(e.target.files[0])
-                                }}  />
+                                }} />
                             </FormControl>
                             <FormMessage className="text-sm text-red-600">{form.formState.errors.image?.message?.toString()}</FormMessage>
                         </FormItem>
@@ -124,8 +132,8 @@ export const ProductForm = () => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="col-span-2 bg-yellow-600 text-white">
-                    Submit
+                <Button type="submit" className="col-span-2 bg-yellow-600 text-white" disabled={submiting}>
+                    {submiting?"Submiting":"Submit"}
                 </Button>
             </form>
 

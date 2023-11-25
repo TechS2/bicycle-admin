@@ -1,17 +1,13 @@
-'use client';
+'use client'
+import { api } from "@/trpc/react"
+import { addEuroSign } from "@/utils"
+import { Table, Pagination, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button } from "@nextui-org/react"
+import { debounce } from "lodash"
+import { useState, useMemo } from "react"
 
-import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Pagination } from '@nextui-org/react';
-import { useMemo, useState } from 'react';
-import { FaTrashCan } from 'react-icons/fa6';
-import Image from 'next/image';
-import { addEuroSign } from '@/utils';
-import { api } from '@/trpc/react';
-import { Button } from '@chakra-ui/react';
-import { debounce } from 'lodash';
 
-export const ProductTable = () => {
-
-    const { data } = api.product.getAllProducts.useQuery()
+export const OrderTable = ()=>{
+    const {data} = api.order.getAllOrders.useQuery()
     const [page, setPage] = useState<number>(1)
     const [globalFilter, setGlobalFilter] = useState<string>('')
 
@@ -23,9 +19,10 @@ export const ProductTable = () => {
             return data;
         }
         return data.filter(item =>
-            item.name.toLowerCase().includes(globalFilter.toLowerCase()) ||
-            item.code.toLowerCase().includes(globalFilter.toLowerCase()) ||
-            addEuroSign(item.price).includes(globalFilter.toLowerCase())
+            item.personalEmail.toLowerCase().includes(globalFilter.toLowerCase()) ||
+            item.paymentEmail.toLowerCase().includes(globalFilter.toLowerCase()) ||
+             item.captureId.toLowerCase().includes(globalFilter.toLowerCase()) ||
+            addEuroSign(String(item.amount)).includes(globalFilter.toLowerCase())
         );
     }, [data, globalFilter]);
 
@@ -63,6 +60,7 @@ export const ProductTable = () => {
                             showControls
                             showShadow
                             color="danger"
+                            defaultValue={page}
                             page={page}
                             total={pages}
                             onChange={(page) => setPage(page)}
@@ -76,11 +74,11 @@ export const ProductTable = () => {
             >
                 <TableHeader >
                     <TableColumn className='font-bold text-black'>Id</TableColumn>
-                    <TableColumn className='font-bold text-black'>Name</TableColumn>
-                    <TableColumn className='font-bold text-black'>Code</TableColumn>
-                    <TableColumn className='font-bold text-black'>Image</TableColumn>
-                    <TableColumn className='font-bold text-black'>Price</TableColumn>
-                    <TableColumn className='font-bold text-black'>Size</TableColumn>
+                    <TableColumn className='font-bold text-black'>Cart Id</TableColumn>
+                    <TableColumn className='font-bold text-black'>CaptureId</TableColumn>
+                    <TableColumn className='font-bold text-black'>Email(Personal)</TableColumn>
+                    <TableColumn className='font-bold text-black'>Email(Payment)</TableColumn>
+                    <TableColumn className='font-bold text-black'>Amount</TableColumn>
                     <TableColumn className='font-bold text-black'>Action</TableColumn>
                 </TableHeader>
                 <TableBody items={items} emptyContent={'No Product to Display.'}>
@@ -89,27 +87,17 @@ export const ProductTable = () => {
                             <TableCell>
                                 {item.id}
                             </TableCell>
-                            <TableCell>{item.name}</TableCell>
-                            <TableCell>{item.code}</TableCell>
-                            <TableCell>
-                                <div className="w-[5rem] h-[4rem]">
-                                    <Image
-                                        src={item.image}
-                                        alt="Product image"
-                                        width={250}
-                                        height={250}
-                                        className="w-full h-full object-contain"
-                                    />
-                                </div>
-                            </TableCell>
-                            <TableCell>{addEuroSign(item.price)}</TableCell>
-                            <TableCell>{item.size}</TableCell>
+                            <TableCell>{item.Cart[0]?.id}</TableCell>
+                            <TableCell>{item.captureId}</TableCell>
+                            <TableCell>{item.personalEmail}</TableCell>
+                            <TableCell>{item.paymentEmail}</TableCell>
+                            <TableCell>{addEuroSign(String(item.amount))}</TableCell>
                             <TableCell>
                                 <Button
                                     className="text-red-600 border-2 border-red-600 rounded-full p-2"
 
                                 >
-                                    <FaTrashCan />
+                                    Detail
                                 </Button>
                             </TableCell>
                         </TableRow>
@@ -119,4 +107,4 @@ export const ProductTable = () => {
             </Table>
         </div>
     );
-};
+}

@@ -1,31 +1,7 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import {  NextResponse } from 'next/server';
 import { db } from '@/server/db'
-import { getServerAuthSession } from '@/server/auth';
-import { getServerSession } from 'next-auth';
-import { getSession } from 'next-auth/react';
-
-
-
-
-export async function GET(req: Request, _res: NextResponse){
-
-  const session = await getServerAuthSession()
-  const session1 = await getServerSession()
-  const session3 = await getSession()
-  console.log("1",session)
-  console.log("2",session1)
-  console.log("3",session3)
-  return NextResponse.json({message:"Receive"})
-}
 
 export async function POST(req: Request, _res: NextResponse) {
-
-  const session = await getServerAuthSession()
-  const session1 = await getServerSession()
-  const session3 = await getSession()
-  console.log("1",session)
-  console.log("2",session1)
-  console.log("3",session3)
   //* Process the webhook data
   if (!req.body)
     return NextResponse.json({ message: "Error" })
