@@ -91,6 +91,7 @@ model Product {
   id          Int        @id @default(autoincrement())
   name        String
   code        String     @unique
+  active      Boolean    @default(true)
   image       String
   description String
   price       String

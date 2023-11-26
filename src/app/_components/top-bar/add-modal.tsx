@@ -16,7 +16,7 @@ export const AddModal = () => {
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Modal Title</ModalHeader>
+                    <ModalHeader>Add Product</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <ProductForm />

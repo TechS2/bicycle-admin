@@ -39,14 +39,12 @@ export const LoginForm = () => {
 
     const formSubmitted = async (data: FieldValues) => {
 
-        console.log(data)
         setSubmiting((prev) => !prev)
         const signInData = await signIn('credentials', {
             email: data.email,
             password: data.password,
             redirect: false,
         })
-        console.log(signInData)
         setSubmiting((prev) => !prev)
         if (signInData?.error)
             toast({

@@ -38,21 +38,50 @@ export const productRouter = createTRPCRouter({
               code: productCode.substring(0, 6)
             }
           })
-          return "Saved"
         } catch (error) {
-          console.log(error)
-          throw new TRPCError({ message: "Error in Saving category", code: "BAD_REQUEST" })
+          throw new TRPCError({ message: "Error in Saving Product", code: "BAD_REQUEST" })
         }
       }),
 
   getAllProducts:
     protectedProcedure
       .query(async ({ ctx }) => {
-        return  await ctx.db.product.findMany()
+        return await ctx.db.product.findMany()
       }),
-  getTesting:
-      publicProcedure
-      .query(async ({ ctx }) => {
-        return  await ctx.db.product.findMany()
+  deleteProduct:
+    protectedProcedure
+      .input(z.object({
+        productId: z.number()
+      }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await ctx.db.product.delete({
+            where: {
+              id: input.productId
+            }
+          })
+        } catch (error) {
+          throw new TRPCError({ message: "Error in Deleting Product", code: "BAD_REQUEST" })
+        }
       }),
+  toogleStatus:
+    protectedProcedure
+      .input(z.object({
+        productId: z.number(),
+        status: z.boolean()
+      }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await ctx.db.product.update({
+            where: {
+              id: input.productId
+            },
+            data: {
+              active: !input.status
+            }
+          })
+        } catch (error) {
+          throw new TRPCError({ message: "Error in Updating Product", code: "BAD_REQUEST" })
+        }
+      })
 });

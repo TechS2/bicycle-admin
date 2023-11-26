@@ -2,21 +2,67 @@
 
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Pagination } from '@nextui-org/react';
 import { useMemo, useState } from 'react';
-import { FaTrashCan } from 'react-icons/fa6';
+import { FaPencil, FaPowerOff, FaTrashCan } from 'react-icons/fa6';
 import Image from 'next/image';
-import { addEuroSign } from '@/utils';
+import { addEuroSign, addInches } from '@/utils';
 import { api } from '@/trpc/react';
 import { Button } from '@chakra-ui/react';
 import { debounce } from 'lodash';
+import { toast } from '@/components/ui/use-toast';
+import { Status } from '../status';
+import { useRouter } from 'next/navigation';
 
 export const ProductTable = () => {
 
+    const router = useRouter()
     const { data } = api.product.getAllProducts.useQuery()
+    const {mutate} = api.product.deleteProduct.useMutation({
+        onSuccess:()=>{
+            toast({
+                variant: "default",
+                title: "Sucess!!!",
+                description: "Product Deleted Successfullly.",
+                duration:2000,
+                className:"bg-green-600 text-white"
+            })
+            router.refresh()
+        },
+        onError:()=>{
+            toast({
+                variant: "destructive",
+                title: "Failed!!.",
+                description: "You can't delete this product.",
+                duration:2000,
+                className:"bg-red-600 text-white"
+            })
+        }
+    })
+    const toogler = api.product.toogleStatus.useMutation({
+        onSuccess:()=>{
+            toast({
+                variant: "default",
+                title: "Sucess!!!",
+                description: "Product Updated Successfullly.",
+                duration:2000,
+                className:"bg-green-600 text-white"
+            })
+            router.refresh()
+        },
+        onError:()=>{
+            toast({
+                variant: "destructive",
+                title: "Failed!!.",
+                description: "Updation error.",
+                duration:2000,
+                className:"bg-red-600 text-white"
+            })
+        }
+    })
     const [page, setPage] = useState<number>(1)
     const [globalFilter, setGlobalFilter] = useState<string>('')
 
     const rowsPerPage = 8
-    const pages = Math.ceil((data?.length ?? 0 )/ rowsPerPage);
+    const pages = Math.ceil((data?.length ?? 0) / rowsPerPage);
     const filteredData = useMemo(() => {
         if (!data) return [];
         if (globalFilter === "" || globalFilter === " ") {
@@ -44,6 +90,12 @@ export const ProductTable = () => {
         setGlobalFilter(value)
     }, 300)
 
+    const deleteProduct = (productId:number)=>{
+        mutate({productId:productId})
+    }
+    const Toogle = (productId:number,status:boolean)=>{
+        toogler.mutate({productId:productId,status:status})
+    }
     return (
         <div className="my-4">
             <Table
@@ -75,22 +127,19 @@ export const ProductTable = () => {
                 }}
             >
                 <TableHeader >
-                    <TableColumn className='font-bold text-black'>Id</TableColumn>
+                    <TableColumn className='font-bold text-black'> </TableColumn>
                     <TableColumn className='font-bold text-black'>Name</TableColumn>
-                    <TableColumn className='font-bold text-black'>Code</TableColumn>
-                    <TableColumn className='font-bold text-black'>Image</TableColumn>
+                    <TableColumn className='font-bold text-black'>SKU</TableColumn>
                     <TableColumn className='font-bold text-black'>Price</TableColumn>
+                    <TableColumn className='font-bold text-black'>Status</TableColumn>
                     <TableColumn className='font-bold text-black'>Size</TableColumn>
-                    <TableColumn className='font-bold text-black'>Action</TableColumn>
+                    <TableColumn className='font-bold text-black'>Delete</TableColumn>
+                    <TableColumn className='font-bold text-black'>Edit</TableColumn>
+                    <TableColumn className='font-bold text-black'>Active/Inactive</TableColumn>
                 </TableHeader>
                 <TableBody items={items} emptyContent={'No Product to Display.'}>
                     {(item) => (
                         <TableRow key={item.id}>
-                            <TableCell>
-                                {item.id}
-                            </TableCell>
-                            <TableCell>{item.name}</TableCell>
-                            <TableCell>{item.code}</TableCell>
                             <TableCell>
                                 <div className="w-[5rem] h-[4rem]">
                                     <Image
@@ -102,14 +151,33 @@ export const ProductTable = () => {
                                     />
                                 </div>
                             </TableCell>
+                            <TableCell>{item.name}</TableCell>
+                            <TableCell>{item.code}</TableCell>
                             <TableCell>{addEuroSign(item.price)}</TableCell>
-                            <TableCell>{item.size}</TableCell>
+                            <TableCell><Status status={item.active}/></TableCell>
+                            <TableCell>{addInches(item.size)}</TableCell>
                             <TableCell>
                                 <Button
                                     className="text-red-600 border-2 border-red-600 rounded-full p-2"
-
+                                    onClick={()=>deleteProduct(item.id)}
                                 >
                                     <FaTrashCan />
+                                </Button>
+                            </TableCell>
+                            <TableCell>
+                                <Button
+                                    className="text-green-600 border-2 border-green-600 rounded-full p-2"
+                                    onClick={()=>Toogle(item.id,item.active)}
+                                >
+                                    <FaPencil />
+                                </Button>
+                            </TableCell>
+                            <TableCell>
+                                <Button
+                                    className="text-yellow-600 border-2 border-yellow-600 rounded-full p-2"
+                                    onClick={()=>Toogle(item.id,item.active)}
+                                >
+                                    <FaPowerOff />
                                 </Button>
                             </TableCell>
                         </TableRow>

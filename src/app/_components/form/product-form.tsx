@@ -88,7 +88,7 @@ export const ProductForm = () => {
                     name="image"
                     render={({ field }) => (
                         <FormItem className="col-span-2">
-                            <FormLabel className="text-base">Price</FormLabel>
+                            <FormLabel className="text-base">Picture</FormLabel>
                             <FormControl>
                                 <Input type="file" onChange={(e) => {
                                     if (e.target.files)
@@ -132,9 +132,9 @@ export const ProductForm = () => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="col-span-2 bg-yellow-600 text-white" disabled={submiting}>
-                    {submiting?"Submiting":"Submit"}
-                </Button>
+                <button type="submit" className="col-span-2 bg-c-primary hover:bg-white hover:text-c-primary border-2 hover:border-c-primary text-white p-1 rounded-md" disabled={submiting}>
+                    {submiting?"Submitting":"Submit"}
+                </button>
             </form>
 
         </Form>
