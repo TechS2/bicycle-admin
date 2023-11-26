@@ -5,15 +5,15 @@ import { Table, Pagination, TableHeader, TableColumn, TableBody, TableRow, Table
 import { debounce } from "lodash"
 import Link from "next/link"
 import { useState, useMemo } from "react"
-import {FaInfo} from 'react-icons/fa6'
+import { FaInfo } from 'react-icons/fa6'
 
-export const OrderTable = ()=>{
-    const {data} = api.order.getAllOrders.useQuery()
+export const OrderTable = () => {
+    const { data } = api.order.getAllOrders.useQuery()
     const [page, setPage] = useState<number>(1)
     const [globalFilter, setGlobalFilter] = useState<string>('')
 
     const rowsPerPage = 8
-    const pages = Math.ceil((data?.length ?? 0 )/ rowsPerPage);
+    const pages = Math.ceil((data?.length ?? 0) / rowsPerPage);
     const filteredData = useMemo(() => {
         if (!data) return [];
         if (globalFilter === "" || globalFilter === " ") {
@@ -22,7 +22,7 @@ export const OrderTable = ()=>{
         return data.filter(item =>
             item.personalEmail.toLowerCase().includes(globalFilter.toLowerCase()) ||
             item.paymentEmail.toLowerCase().includes(globalFilter.toLowerCase()) ||
-             item.captureId.toLowerCase().includes(globalFilter.toLowerCase()) ||
+            item.captureId.toLowerCase().includes(globalFilter.toLowerCase()) ||
             addEuroSign(String(item.amount)).includes(globalFilter.toLowerCase())
         );
     }, [data, globalFilter]);
@@ -74,21 +74,15 @@ export const OrderTable = ()=>{
                 }}
             >
                 <TableHeader >
-                    <TableColumn className='text-base font-bold text-black'>Id</TableColumn>
-                    <TableColumn className='text-base font-bold text-black'>Cart Id</TableColumn>
-                    <TableColumn className='text-base font-bold text-black'>CaptureId</TableColumn>
-                    <TableColumn className='text-base font-bold text-black'>Email(Personal)</TableColumn>
-                    <TableColumn className='text-base font-bold text-black'>Email(Payment)</TableColumn>
+                    <TableColumn className='text-base font-bold text-black'>Order No.</TableColumn>
+                    <TableColumn className='text-base font-bold text-black'>Customer Email</TableColumn>
+                    <TableColumn className='text-base font-bold text-black'>PayPal Email</TableColumn>
                     <TableColumn className='text-base font-bold text-black'>Amount</TableColumn>
-                    <TableColumn className='text-base font-bold text-black'>Action</TableColumn>
+                    <TableColumn className='text-base font-bold text-black'>Detail</TableColumn>
                 </TableHeader>
-                <TableBody items={items} emptyContent={'No Product to Display.'}>
+                <TableBody items={items} emptyContent={'No Order to Display.'}>
                     {(item) => (
                         <TableRow key={item.id}>
-                            <TableCell>
-                                {item.id}
-                            </TableCell>
-                            <TableCell>{item.Cart[0]?.id}</TableCell>
                             <TableCell>{item.captureId}</TableCell>
                             <TableCell>{item.personalEmail}</TableCell>
                             <TableCell>{item.paymentEmail}</TableCell>
@@ -96,9 +90,9 @@ export const OrderTable = ()=>{
                             <TableCell>
                                 <Link
                                     href={`/dashboard/order/${item.id}`}
-                                    className="flex gap-1 justify-normal align-middle items-center bg-yellow-600 text-white p-3 w-fit"
+                                    className="flex gap-1 justify-normal align-middle items-center bg-c-primary text-white p-3 rounded-md w-fit"
                                 >
-                                    <FaInfo/>
+                                    <FaInfo />
                                     Detail
                                 </Link>
                             </TableCell>

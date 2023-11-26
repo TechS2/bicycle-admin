@@ -11,6 +11,12 @@ module.exports = {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
+    extend:{
+      colors:{
+        "c-primary":"#A92F56",
+        "logo":"#B83B5E"
+      },
+    }
   },
   plugins: [require("tailwindcss-animate"), nextui()],
 }

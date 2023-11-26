@@ -1,4 +1,4 @@
-import { addEuroSign } from "@/utils";
+import { addEuroSign, convertDate } from "@/utils";
 import Image from "next/image";
 import { SubDetail } from "./sub-detail";
 
@@ -8,8 +8,8 @@ export const Detail = ({ item }: { item: any }) => (
             <div className="col-span-1">
                 <SubDetail label="Quantity" value={item.quantity} />
                 <SubDetail label="Rental Days" value={item.dif} />
-                <SubDetail label="Start Date" value={item.startDate} />
-                <SubDetail label="End Date" value={item.endDate} />
+                <SubDetail label="Start Date" value={convertDate(item.startDate)} />
+                <SubDetail label="End Date" value={convertDate(item.endDate)} />
             </div>
             <div className="col-span-1">
                 <SubDetail label="Size (if any)" value={item.size} />
@@ -20,6 +20,9 @@ export const Detail = ({ item }: { item: any }) => (
         </div>
         <div className="flex justify-center">
             <Image src={`${item.Product.image}`} width={200} height={100} alt={`${item.Product.name}_image`} />
+        </div>
+        <div className="flex justify-center">
+            <SubDetail label="Sub-Total" value={addEuroSign(String(Number(item.Product.price)*Number(item.quantity)*Number(item.dif)))} />
         </div>
     </article>
 );
