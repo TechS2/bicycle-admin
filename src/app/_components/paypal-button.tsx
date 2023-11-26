@@ -9,37 +9,39 @@ import { useRouter } from "next/navigation"
 export const PayPalButton = () => {
 
     const session = useSession()
-    const router  = useRouter()
+    const router = useRouter()
     const [isConnect, setConnect] = useState<boolean>(false)
 
-    console.log(session)
-    
     if (!session)
         router.push('/')
 
-    const { data } = api.paypal.getStatus.useQuery({email:session.data?.user.email})
+    const { data } = api.paypal.getStatus.useQuery({ email: session.data?.user.email })
 
     const { mutate } = api.paypal.connectToPayPal.useMutation({
         onSuccess: (data) => {
             window.location.href = data
-        }     
+        }
     })
 
     useEffect(() => {
         if (data)
             setConnect(() => true)
     }, [data])
-    
+
     const connect = () => {
         mutate()
     }
 
     return (
-        <button className="bg-green-700 hover:bg-white hover:text-green-700 hover:border-2 flex text-white text-3xl p-3 rounded-lg" onClick={connect} disabled={isConnect?true:false}>
-            <BsPaypal className="px-1" />
-            <span className="px-2">
-                {isConnect? "Connected":"Connect"}
-            </span>
-        </button>
+        <div className="flex flex-col">
+            <button className="bg-green-700 hover:bg-white hover:text-green-700 border-2 disabled:bg-green-700 disabled:text-white flex justify-evenly text-white text-xl py-2 rounded-lg" onClick={connect} disabled={isConnect ? true : false}>
+                <BsPaypal className=" w-8 h-8" />
+                <span >
+                    {isConnect ? "Connected" : "Connect"}
+                </span>
+            </button>
+            <small className="text-gray-900 font-bold">Already connected with paypal</small>
+        </div>
+
     )
 }

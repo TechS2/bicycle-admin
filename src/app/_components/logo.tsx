@@ -1,9 +1,6 @@
 import Image from "next/image"
 
 
-export const Logo = ()=>{
-
-    return (
-        <Image src={"/logo_1.png"} alt="Logo image" width={100} height={70}/>
-    )
-}
+export const Logo = () => (
+    <Image src={"/logo_1.png"} className="w-[8rem] h-auto" alt="Logo image" width={500} height={500} />
+)
