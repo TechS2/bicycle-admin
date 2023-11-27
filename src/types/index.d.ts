@@ -13,3 +13,14 @@ type MerchantWebhook = {
     };
     links: Array<{ href: string; rel: string; method: string }>;
   }
+
+  type ProductProp  =  {
+    id: number
+    name: string
+    code: string
+    active: boolean
+    image: string
+    description: string
+    price: string
+    size: string
+}
