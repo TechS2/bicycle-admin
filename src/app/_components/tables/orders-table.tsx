@@ -9,6 +9,11 @@ import { FaInfo } from 'react-icons/fa6'
 
 export const OrderTable = () => {
     const { data } = api.order.getAllOrders.useQuery()
+    const {mutate} = api.paypal.makeRefund.useMutation({
+        onSuccess:()=>{
+            console.log("Refund SuccessFull")
+        }
+    })
     const [page, setPage] = useState<number>(1)
     const [globalFilter, setGlobalFilter] = useState<string>('')
 
@@ -41,6 +46,11 @@ export const OrderTable = () => {
         }
         setGlobalFilter(value)
     }, 300)
+
+    const Refund = (captureId:string)=>{
+
+        mutate({captureId:captureId})
+    }
 
     return (
         <div className="my-4">
@@ -79,6 +89,7 @@ export const OrderTable = () => {
                     <TableColumn className='text-base font-bold text-black'>PayPal Email</TableColumn>
                     <TableColumn className='text-base font-bold text-black'>Amount</TableColumn>
                     <TableColumn className='text-base font-bold text-black'>Detail</TableColumn>
+                    <TableColumn className='text-base font-bold text-black'>Refund</TableColumn>
                 </TableHeader>
                 <TableBody items={items} emptyContent={'No Order to Display.'}>
                     {(item) => (
@@ -95,6 +106,11 @@ export const OrderTable = () => {
                                     <FaInfo />
                                     Detail
                                 </Link>
+                            </TableCell>
+                            <TableCell>
+                                <button className="bg-gray-900 text-white p-2" onClick={()=>Refund(item.paymentId)}>
+                                    Refund
+                                </button>
                             </TableCell>
                         </TableRow>
                     )

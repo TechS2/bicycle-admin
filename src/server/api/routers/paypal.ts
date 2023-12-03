@@ -1,12 +1,14 @@
 import { z } from "zod";
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { randomUUID } from "crypto";
 import {
     createTRPCRouter,
     protectedProcedure,
     publicProcedure,
 } from "@/server/api/trpc";
+import { getAuthAssertionValue } from "@/utils";
+import { api } from "@/trpc/server";
 export const paypalRouter = createTRPCRouter({
 
     getAuthToken:
@@ -37,7 +39,7 @@ export const paypalRouter = createTRPCRouter({
 
     connectToPayPal:
         protectedProcedure
-            .mutation( async ({ ctx }) => {
+            .mutation(async ({ ctx }) => {
                 const id: string = randomUUID().toString()
                 try {
                     const data = {
@@ -64,7 +66,7 @@ export const paypalRouter = createTRPCRouter({
                             }
                         ],
                         "partner_config_override": {
-                            "return_url": "https://96b9-103-103-43-236.ngrok-free.app/dashboard/success",   
+                            "return_url": "https://96b9-103-103-43-236.ngrok-free.app/dashboard/success",
                         }
                     };
 
@@ -74,7 +76,7 @@ export const paypalRouter = createTRPCRouter({
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${ctx.session?.user.paypal_token}`,
                     };
-                     const response = await axios.post(paypalApiUrl, data, { headers })
+                    const response = await axios.post(paypalApiUrl, data, { headers })
                     const url = response.data.links?.find((link: { rel: string; }) => link?.rel === 'action_url').href
                     return url
                 } catch (error) {
@@ -89,34 +91,59 @@ export const paypalRouter = createTRPCRouter({
                 z.object({
                     trackingId: z.string(),
                     merchantId: z.string(),
-                    email:z.any()
+                    email: z.any()
                 }))
             .mutation(async ({ ctx, input }) => {
                 await ctx.db.seller.create({
                     data: {
                         trackingId: input.trackingId,
-                        email:input.email,
-                        merchantId:"",
-                        partner_client_id:""
+                        email: input.email,
+                        merchantId: "",
+                        partner_client_id: ""
                     },
                 })
             }),
-    
+
     getStatus:
         protectedProcedure
-        .input(z.object({
-            email:z.any()
-        }))
-        .query(async ({ctx,input})=>{
-            if(!input.email)
+            .input(z.object({
+                email: z.any()
+            }))
+            .query(async ({ ctx, input }) => {
+                if (!input.email)
+                    return false
+                const response = await ctx.db.seller.findUnique({
+                    where: {
+                        email: input.email
+                    }
+                })
+                if (response)
+                    return true
                 return false
-            const response = await ctx.db.seller.findUnique({
-                where:{
-                    email: input.email
+            }),
+    makeRefund:
+        publicProcedure
+            .input(z.object({
+                captureId: z.string()
+            }))
+            .mutation(async ({ ctx, input }) => {
+                const clientId = process.env.PAYPAL_CLIENT
+                const sellerPayerId = process.env.PAYPAL_MERCHANT_ID
+                console.log(clientId,sellerPayerId)
+                if (clientId && sellerPayerId) {
+                    const authAssertion = getAuthAssertionValue(clientId, sellerPayerId);
+                    const paypalApiUrl = `${process.env.PAYPAL_URL}/v2/payments/captures/${input.captureId}/refund`;
+                    console.log("CaptureId",input.captureId)
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${ctx.session?.user.paypal_token}`,
+                        'PayPal-Auth-Assertion':authAssertion
+                    };
+                    axios.post(paypalApiUrl, {}, { headers })
+                    .then((response)=>console.log(response.data))
+                    .catch((error:AxiosError)=>console.log(error.response?.data))
+
                 }
-            })
-            if(response)
-                return true
-            return false
-        })
+                return ""
+            }),
 });

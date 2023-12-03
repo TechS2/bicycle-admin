@@ -23,9 +23,28 @@ export const addInches = (size: string) => {
     return data;
 }
 
-export const  convertDate = (dateString :string)=> {
+export const convertDate = (dateString: string) => {
     const [month, day, year] = dateString.split('/');
     const convertedDateString = `${day}/${month}/${year}`;
     return convertedDateString;
-  }
-  
+}
+
+
+export const getAuthAssertionValue = (clientId: string, sellerPayerId: string) => {
+    const header = {
+        "alg": "none"
+    };
+    const encodedHeader = base64url(header);
+    const payload = {
+        "iss": clientId,
+        "payer_id": sellerPayerId
+    };
+    const encodedPayload = base64url(payload);
+    return `${encodedHeader}.${encodedPayload}.`;
+}
+export const base64url = (json: object) => {
+    return btoa(JSON.stringify(json))
+        .replace(/=+$/, '')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_');
+}
