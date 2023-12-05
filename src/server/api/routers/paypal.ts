@@ -66,7 +66,7 @@ export const paypalRouter = createTRPCRouter({
                             }
                         ],
                         "partner_config_override": {
-                            "return_url": "https://96b9-103-103-43-236.ngrok-free.app/dashboard/success",
+                            "return_url": "https://bd6d-103-103-43-236.ngrok-free.app/dashboard/success",
                         }
                     };
 

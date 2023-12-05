@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { LoginForm } from "./_components/form/login-form";
 
-export default  function Home() {
+export default function Home() {
 
   return (
     <main>
@@ -17,7 +17,7 @@ export default  function Home() {
         </div>
       </section>
     </main>
-  
+
   );
 }
 

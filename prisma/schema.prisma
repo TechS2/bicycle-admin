@@ -51,52 +51,32 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Cart {
-  id       Int        @id @default(autoincrement())
-  orderId  Int
-  Order    Order      @relation(fields: [orderId], references: [id])
-  CartItem CartItem[]
-}
-
-model CartItem {
-  id        Int     @id @default(autoincrement())
-  size      String?
-  startDate String
-  endDate   String
-  dif       Int
-  quantity  Int
-  productId Int
-  cartId    Int
-  Cart      Cart    @relation(fields: [cartId], references: [id])
-  Product   Product @relation(fields: [productId], references: [id])
-}
-
 model Order {
-  id            Int     @id @default(autoincrement())
-  captureId     String  @unique
+  captureId     String      @unique
   amount        Float
-  status        Boolean @default(false)
-  paymentEmail  String  @default("")
+  status        Boolean     @default(false)
+  paymentEmail  String      @default("")
   personalEmail String
-  arrivalTime   String  @default("")
-  firstName     String  @default("")
-  lastName      String  @default("")
-  option        String  @default("")
-  payerId       String  @default("")
-  paymentId     String  @default("")
-  Cart          Cart[]
+  arrivalTime   String      @default("")
+  firstName     String      @default("")
+  lastName      String      @default("")
+  option        String      @default("")
+  payerId       String      @default("")
+  paymentId     String      @default("")
+  id            Int         @id @default(autoincrement())
+  OrderItem     OrderItem[]
 }
 
 model Product {
-  id          Int        @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   name        String
-  code        String     @unique
-  active      Boolean    @default(true)
+  code        String      @unique
   image       String
   description String
   price       String
   size        String
-  CartItem    CartItem[]
+  active      Boolean     @default(true)
+  OrderItem   OrderItem[]
 }
 
 model Seller {
@@ -111,4 +91,17 @@ model SellerInfo {
   id       Int    @id @default(autoincrement())
   userName String @unique
   password String
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  size      String?
+  startDate String
+  endDate   String
+  dif       Int
+  quantity  Int
+  productId Int
+  orderId   Int
+  Order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  Product   Product @relation(fields: [productId], references: [id])
 }

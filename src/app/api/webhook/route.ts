@@ -46,6 +46,5 @@ export async function POST(req: Request, _res: NextResponse) {
       console.log(`Unhandled webhook event type: ${jsonObject.event_type}`);
   }
 
-  // Respond to the webhook
   return NextResponse.json({ status: 'webhook received' });
 }

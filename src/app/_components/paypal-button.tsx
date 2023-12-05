@@ -34,13 +34,16 @@ export const PayPalButton = () => {
 
     return (
         <div className="flex flex-col">
-            <button className="bg-green-700 hover:bg-white hover:text-green-700 border-2 disabled:bg-green-700 disabled:text-white flex justify-evenly text-white text-xl py-2 rounded-lg" onClick={connect} disabled={isConnect ? true : false}>
+            <button className="bg-green-700 hover:bg-white hover:text-green-700 border-2 disabled:bg-green-700 disabled:text-white flex justify-evenly text-white text-xl  rounded-lg p-2" onClick={connect} disabled={isConnect ? true : false}>
                 <BsPaypal className=" w-8 h-8" />
                 <span >
                     {isConnect ? "Connected" : "Connect"}
                 </span>
             </button>
-            <small className="text-gray-900 font-bold">Already connected with paypal</small>
+            {
+               isConnect &&  <small className="text-gray-900 font-bold">Already connected with paypal</small>
+            }
+            
         </div>
 
     )
