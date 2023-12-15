@@ -11,11 +11,11 @@ export default async function OrderDetail({ params }: { params: { orderId: strin
         <section className=" flex flex-col gap-3 bg-white font-serif  m-2 p-3 rounded-lg">
             <Heading title="Order Details" />
             <PaymenInfo captureId={orderDetail?.captureId} paymentEmail={orderDetail?.paymentEmail} personalEmail={orderDetail?.personalEmail} amount={orderDetail?.amount} />
-            <CartDetail cartLength={orderDetail?.Cart[0]?.CartItem.length} />
+            <CartDetail cartLength={orderDetail?.OrderItem.length} />
             <Heading title="Products" />
             <div className="grid grid-cols-3 p-4 gap-2">
                 {
-                    orderDetail?.Cart[0]?.CartItem.map((item) => (
+                    orderDetail?.OrderItem.map((item) => (
                         <Detail item={item}/>
                     ))
                 }

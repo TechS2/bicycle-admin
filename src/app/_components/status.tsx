@@ -1,7 +1,5 @@
 import { Badge } from "@chakra-ui/react"
 
-
-
 export const Status = ({ status }: { status: boolean }) => {
 
     return (

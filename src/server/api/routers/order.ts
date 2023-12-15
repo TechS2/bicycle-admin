@@ -9,7 +9,7 @@ export const orderRouter = createTRPCRouter({
             .query(async ({ ctx }) => {
                 const orders = await ctx.db.order.findMany({
                     include: {
-                        Cart: true
+                        OrderItem: true
                     }
                 })
                 return orders
@@ -25,13 +25,9 @@ export const orderRouter = createTRPCRouter({
                         id: Number(input.orderId)
                     },
                     include: {
-                        Cart: {
+                        OrderItem: {
                             include: {
-                                CartItem: {
-                                    include: {
-                                        Product: true
-                                    }
-                                },
+                                Product: true
                             },
                         },
                     }

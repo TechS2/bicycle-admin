@@ -1,13 +1,17 @@
 'use client'
+import { api } from "@/trpc/react"
+import { useSession } from "next-auth/react"
 import { type FieldValues, useForm } from "react-hook-form"
 
 export const PasswordForm = () => {
 
+    const session = useSession()
+    const { mutate } = api.register.updatePassword.useMutation()
     const { register, handleSubmit, formState: { errors } } = useForm()
 
     const formSubmitted = (data: FieldValues) => {
-
-        console.log(data)
+        if (session.data?.user.email) 
+            mutate({ userName: session.data?.user.email, updatedPassword:data.password})
     }
     return (
         <form className="flex gap-2" onSubmit={handleSubmit(formSubmitted)}>
@@ -20,15 +24,14 @@ export const PasswordForm = () => {
                         {...register('password', {
                             required: "Password is required.",
                             minLength: {
-                                value:8,
-                                message:"Minimium length 8"
+                                value: 8,
+                                message: "Minimium length 8"
                             }
                         })}
                         placeholder="**********"
                     />
                     {errors.password?.message && <small className="text-red-600">{errors.password.message?.toString()}</small>}
                 </div>
-
             </div>
             <button type="submit" className="bg-gray-900 text-white p-2 rounded-md">
                 Change

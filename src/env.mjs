@@ -28,6 +28,10 @@ export const env = createEnv({
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string() : z.string().url()
     ),
+    PAYPAL_CLIENT:z.string(),
+    PAYPAL_SECERT:z.string(),
+    PAYPAL_MERCHANT_ID:z.string(),
+    PAYPAL_SANDBOX:z.string()
     // Add ` on ID and SECRET if you want to make sure they're not empty
   },
 
@@ -49,6 +53,10 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    PAYPAL_CLIENT:process.env.PAYPAL_CLIENT,
+    PAYPAL_SECERT:process.env.PAYPAL_SECERT,
+    PAYPAL_MERCHANT_ID:process.env.PAYPAL_MERCHANT_ID,
+    PAYPAL_SANDBOX:process.env.PAYPAL_SANDBOX
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
