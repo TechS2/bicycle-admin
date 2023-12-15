@@ -8,7 +8,6 @@ import {
     publicProcedure,
 } from "@/server/api/trpc";
 import { getAuthAssertionValue } from "@/utils";
-import { api } from "@/trpc/server";
 export const paypalRouter = createTRPCRouter({
 
     getAuthToken:
@@ -27,7 +26,7 @@ export const paypalRouter = createTRPCRouter({
                         },
                     };
                     const data = 'grant_type=client_credentials';
-                    const response = await axios.post('https://api.sandbox.paypal.com/v1/oauth2/token', data, config)
+                    const response = await axios.post(`${process.env.PAYPAL_SANDBOX}/v1/oauth2/token`, data, config)
                     const access_token = response.data.access_token;
                     return access_token;
                 } catch (error) {
@@ -66,15 +65,16 @@ export const paypalRouter = createTRPCRouter({
                             }
                         ],
                         "partner_config_override": {
-                            "return_url": "https://bd6d-103-103-43-236.ngrok-free.app/dashboard/success",
+                            "return_url": "https://341e-103-103-43-236.ngrok-free.app/dashboard/success",
                         }
                     };
 
-                    const paypalApiUrl = 'https://api-m.sandbox.paypal.com/v2/customer/partner-referrals';
+                    const paypalApiUrl = `${process.env.PAYPAL_SANDBOX}/v2/customer/partner-referrals`;
 
                     const headers = {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${ctx.session?.user.paypal_token}`,
+                        'Authorization': `Bearer ${ctx.session?.user.paypal_token}`,
+                        'Paypal-Partner-Attribution-Id': 'KOLIBRI_SP_PPCP'
                     };
                     const response = await axios.post(paypalApiUrl, data, { headers })
                     const url = response.data.links?.find((link: { rel: string; }) => link?.rel === 'action_url').href
@@ -103,7 +103,6 @@ export const paypalRouter = createTRPCRouter({
                     },
                 })
             }),
-
     getStatus:
         protectedProcedure
             .input(z.object({
@@ -121,6 +120,38 @@ export const paypalRouter = createTRPCRouter({
                     return true
                 return false
             }),
+
+    onBoardingStatus:
+        protectedProcedure
+            .input(z.object({
+                merchantId:z.string()
+            }))
+            .query(async ({ ctx, input }) => {
+                const paypalApiUrl = `${process.env.PAYPAL_SANDBOX}/v1/customer/partners/${process.env.PAYPAL_ID}/merchant-integrations/${input.merchantId}`;
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${ctx.session?.user.paypal_token}`,
+                    'Paypal-Partner-Attribution-Id': 'KOLIBRI_SP_PPCP'
+                };
+                const response = await axios.get(paypalApiUrl, { headers })
+                if(response){
+                    const primary_email = response.data.payments_receivable
+                    const amount_recievable = response.data.primary_email_confirmed
+                    return {primary_email : primary_email,amount_receivable:amount_recievable}
+                }
+            }),
+    deActivateAccount:
+        protectedProcedure
+            .input(z.object({
+                email: z.string()
+            }))
+            .mutation(async ({ ctx, input }) => {
+                await ctx.db.seller.delete({
+                    where: {
+                        email: input.email
+                    }
+                })
+            }),
     makeRefund:
         publicProcedure
             .input(z.object({
@@ -129,20 +160,18 @@ export const paypalRouter = createTRPCRouter({
             .mutation(async ({ ctx, input }) => {
                 const clientId = process.env.PAYPAL_CLIENT
                 const sellerPayerId = process.env.PAYPAL_MERCHANT_ID
-                console.log(clientId,sellerPayerId)
                 if (clientId && sellerPayerId) {
                     const authAssertion = getAuthAssertionValue(clientId, sellerPayerId);
-                    const paypalApiUrl = `${process.env.PAYPAL_URL}/v2/payments/captures/${input.captureId}/refund`;
-                    console.log("CaptureId",input.captureId)
+                    const paypalApiUrl = `${process.env.PAYPAL_SANDBOX}/v2/payments/captures/${input.captureId}/refund`;
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${ctx.session?.user.paypal_token}`,
-                        'PayPal-Auth-Assertion':authAssertion
+                        'PayPal-Auth-Assertion': authAssertion,
+                        'Paypal-Partner-Attribution-Id': 'KOLIBRI_SP_PPCP'
                     };
                     axios.post(paypalApiUrl, {}, { headers })
-                    .then((response)=>console.log(response.data))
-                    .catch((error:AxiosError)=>console.log(error.response?.data))
-
+                        .then((response) => console.log(response.data))
+                        .catch((error: AxiosError) => console.log(error.response?.data))
                 }
                 return ""
             }),

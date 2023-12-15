@@ -42,7 +42,7 @@ export const getAuthAssertionValue = (clientId: string, sellerPayerId: string) =
     const encodedPayload = base64url(payload);
     return `${encodedHeader}.${encodedPayload}.`;
 }
-export const base64url = (json: object) => {
+const base64url = (json: object) => {
     return btoa(JSON.stringify(json))
         .replace(/=+$/, '')
         .replace(/\+/g, '-')
