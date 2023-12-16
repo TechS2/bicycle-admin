@@ -16,7 +16,9 @@ export const addEuroSign = (price: string) => {
 export const addInches = (size: string) => {
     size = size.replace(/ /g, "");
     const sizeAttributes: string[] = size.split("");
-    const symbolRemoved = sizeAttributes.filter((data: string) => Number(data))
+    const symbolRemoved = sizeAttributes
+    .map((data: string) => Number(data))
+    .filter((value:number)=>!isNaN(value))
     const data: string[] = []
     for (let i = 0; i < symbolRemoved.length; i += 2)
         data.push(`${symbolRemoved[i]}${symbolRemoved[i + 1]}" `)

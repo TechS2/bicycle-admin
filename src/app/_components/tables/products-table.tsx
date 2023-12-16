@@ -98,81 +98,85 @@ export const ProductTable = () => {
         toogler.mutate({ productId: productId, status: status })
     }
     return (
-
-        <table className="m-1 bg-white rounded-md shadow-md">
-            <thead>
-                <tr className="border-b-2 p-2">
-                    <th className='font-bold text-black text-center text-lg p-3'>Image</th>
-                    <th className='font-bold text-black text-center text-lg p-3'>Name</th>
-                    <th className='font-bold text-black text-center text-lg p-3'>SKU</th>
-                    <th className='font-bold text-black text-center text-lg p-3'>Price</th>
-                    <th className='font-bold text-black text-center text-lg p-3'>Status</th>
-                    <th className='font-bold text-black text-center text-lg p-3'>Size</th>
-                    <th className='font-bold text-black text-center text-lg p-3'>Delete</th>
-                    <th className='font-bold text-black text-center text-lg p-3'>Edit</th>
-                    <th className='font-bold text-black text-center text-lg p-3'>Active/Inactive</th>
-                </tr>
-            </thead>
-            <tbody>
-                {items.map((item) => (
-                    <tr key={item.id}>
-                        <td className="flex justify-center">
-                            <div className="w-[5rem] h-[4rem]">
-                                <Image
-                                    src={item.image}
-                                    alt="Product image"
-                                    width={250}
-                                    height={250}
-                                    className="w-full h-full object-contain"
+        <>  
+            <div className="flex bg-white m-1 p-3">
+                    <input type="text" className="border-2 p-2 rounded-md" onChange={(e)=>debounceFilter(e.target.value)}  placeholder='Search' />
+            </div>
+            <table className="m-1 bg-white rounded-md shadow-md">
+                <thead>
+                    <tr className="border-b-2 p-2">
+                        <th className='font-bold text-black text-center text-lg p-3'>Image</th>
+                        <th className='font-bold text-black text-center text-lg p-3'>Name</th>
+                        <th className='font-bold text-black text-center text-lg p-3'>SKU</th>
+                        <th className='font-bold text-black text-center text-lg p-3'>Price</th>
+                        <th className='font-bold text-black text-center text-lg p-3'>Status</th>
+                        <th className='font-bold text-black text-center text-lg p-3'>Size</th>
+                        <th className='font-bold text-black text-center text-lg p-3'>Delete</th>
+                        <th className='font-bold text-black text-center text-lg p-3'>Edit</th>
+                        <th className='font-bold text-black text-center text-lg p-3'>Active/Inactive</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {items.map((item) => (
+                        <tr key={item.id}>
+                            <td className="flex justify-center">
+                                <div className="w-[5rem] h-[4rem]">
+                                    <Image
+                                        src={item.image}
+                                        alt="Product image"
+                                        width={250}
+                                        height={250}
+                                        className="w-full h-full object-contain"
+                                    />
+                                </div>
+                            </td>
+                            <td className="text-center">{item.name}</td>
+                            <td className="text-center">{item.code}</td>
+                            <td className="text-center">{addEuroSign(item.price)}</td>
+                            <td className="text-center"><Status status={item.active} /></td>
+                            <td className="text-center">{addInches(item.size)}</td>
+                            <td className="text-center">
+                                <button
+                                    className="text-red-600 border-2 border-red-600 rounded-full p-2"
+                                    onClick={() => deleteProduct(item.id)}
+                                >
+                                    <FaTrashCan />
+                                </button>
+                            </td>
+                            <td className="text-center">
+                                <EditProduct product={item} />
+                            </td>
+                            <td className="text-center">
+                                <button
+                                    className="text-yellow-600 border-2 border-yellow-600 rounded-full p-2"
+                                    onClick={() => Toogle(item.id, item.active)}
+                                >
+                                    <FaPowerOff />
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colSpan={9} className="border-t-2">
+                            <div className="flex justify-center m-4">
+                                <Pagination
+                                    isCompact
+                                    showControls
+                                    showShadow
+                                    color="danger"
+                                    page={page}
+                                    total={pages}
+                                    onChange={(page) => setPage(page)}
                                 />
                             </div>
                         </td>
-                        <td className="text-center">{item.name}</td>
-                        <td className="text-center">{item.code}</td>
-                        <td className="text-center">{addEuroSign(item.price)}</td>
-                        <td className="text-center"><Status status={item.active} /></td>
-                        <td className="text-center">{addInches(item.size)}</td>
-                        <td className="text-center">
-                            <button
-                                className="text-red-600 border-2 border-red-600 rounded-full p-2"
-                                onClick={() => deleteProduct(item.id)}
-                            >
-                                <FaTrashCan />
-                            </button>
-                        </td>
-                        <td className="text-center">
-                            <EditProduct product={item} />
-                        </td>
-                        <td className="text-center">
-                            <button
-                                className="text-yellow-600 border-2 border-yellow-600 rounded-full p-2"
-                                onClick={() => Toogle(item.id, item.active)}
-                            >
-                                <FaPowerOff />
-                            </button>
-                        </td>
                     </tr>
-                ))}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colSpan={9} className="border-t-2">
-                        <div className="flex justify-center m-4">
-                            <Pagination
-                                isCompact
-                                showControls
-                                showShadow
-                                color="danger"
-                                page={page}
-                                total={pages}
-                                onChange={(page) => setPage(page)}
-                            />
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
+                </tfoot>
+            </table>
+        </>
 
-        </table>
 
 
     );
