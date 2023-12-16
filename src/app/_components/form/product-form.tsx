@@ -1,142 +1,126 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { api } from "@/trpc/react"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { FieldValues, useForm } from "react-hook-form"
-import { z } from 'zod'
-import axios from 'axios'
 import { useState } from "react"
-const formSchema = z.object({
-    product: z.string(),
-    description: z.string(),
-    price: z.number(),
-    image: z.any(),
-    size: z.string()
-})
+import { max } from "lodash"
 
 
 export const ProductForm = () => {
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            product: '',
-            description: '',
-            price: 0,
-            image: undefined,
-            size: ''
-        }
-    })
-
+    const {register,handleSubmit,formState:{errors},reset} = useForm()
     const { mutate } = api.product.insertOne.useMutation({
         onSuccess: () => {
-            form.reset()
+            reset()
             window.location.reload()
         }
     })
-    const [submiting,setSubmiting] = useState<boolean>(false)
+    const [submiting, setSubmiting] = useState<boolean>(false)
 
     const formSubmitted = async (data: FieldValues) => {
-        setSubmiting((prev)=>!prev)
-        const formData = new FormData()
-        formData.append("image", data.image)
-        const response = await axios.post("/api/file", formData)
-            mutate({
-                name: data.product,
-                description: data.description,
-                price: String(data.price),
-                image: response.data.url,
-                size: data.size
-            })
-        setSubmiting((prev)=>!prev)
+        setSubmiting((prev) => !prev)
+        const fileBase64: string = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(data.image[0]);
+        })
+        mutate({
+            name: data.name,
+            description: data.description,
+            price: String(data.price),
+            image: fileBase64,
+            size: data.size
+        })
+        setSubmiting((prev) => !prev)
     }
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(formSubmitted)} className="grid grid-cols-2  gap-2">
-                <FormField
-                    control={form.control}
-                    name="product"
-                    render={({ field }) => (
-                        <FormItem className="col-span-2">
-                            <FormLabel className="text-base">Product Name</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Bicycle Name" {...field} />
-                            </FormControl>
-                            <FormMessage className="text-sm text-red-600">{form.formState.errors.product?.message?.toString()}</FormMessage>
-                        </FormItem>
+
+            <form onSubmit={handleSubmit(formSubmitted)} className="grid grid-cols-2 gap-2 [&_input]:border-2 [&_textarea]:border-2 [&_input]:p-2 [&_textarea]:p-2">
+                <div className="col-span-2 flex flex-col gap-2">
+                    <label htmlFor="outlined-adornment-name">Product Name</label>
+                    <input
+                        type="text"
+                        id="outlined-adornment-name"
+                        className="text-black"
+                        {...register('name', {
+                            required: "Product Name is required.",
+                        })}
+                    />
+                    {errors.name?.message && (
+                        <small className="text-red-600">{errors.name.message.toString()}</small>
                     )}
-                />
-                <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                        <FormItem className="col-span-2">
-                            <FormLabel className="text-base">Description</FormLabel>
-                            <FormControl>
-                                <Textarea placeholder="Enter the description" {...field} />
-                            </FormControl>
-                            <FormMessage className="text-sm text-red-600">{form.formState.errors.description?.message?.toString()}</FormMessage>
-                        </FormItem>
+                </div>
+                <div className="col-span-2 flex flex-col gap-2">
+                    <label htmlFor="outlined-adornment-description">Description</label>
+                    <textarea
+                    rows={3}
+                        id="outlined-adornment-description"
+                        className="text-black"
+                        {...register('description', {
+                            required: "Description is required.",
+                        })}
+                    />
+                    {errors.description?.message && (
+                        <small className="text-red-600">{errors.description.message.toString()}</small>
                     )}
-                />
-                <FormField
-                    control={form.control}
-                    name="image"
-                    render={({ field }) => (
-                        <FormItem className="col-span-2">
-                            <FormLabel className="text-base">Picture</FormLabel>
-                            <FormControl>
-                                <Input type="file" onChange={(e) => {
-                                    if (e.target.files)
-                                        field.onChange(e.target.files[0])
-                                }} />
-                            </FormControl>
-                            <FormMessage className="text-sm text-red-600">{form.formState.errors.image?.message?.toString()}</FormMessage>
-                        </FormItem>
+                </div>
+                <div className="col-span-2 flex flex-col gap-2">
+                    <label htmlFor="outlined-adornment-image">Product Image</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        id="outlined-adornment-image"
+                        className="text-black"
+                        {...register('image', {
+                            required: "Image is required.",
+                        })}
+                    />
+                    {errors.image?.message && (
+                        <small className="text-red-600">{errors.image.message.toString()}</small>
                     )}
-                />
-                <FormField
-                    control={form.control}
-                    name="price"
-                    render={({ field }) => (
-                        <FormItem className="col-span-2">
-                            <FormLabel className="text-base">Price</FormLabel>
-                            <FormControl>
-                                <Input type="number"  {...field} onChange={(e) => {
-                                    const value = Number(e.target.value);
-                                    if (value >= 0) {
-                                        field.onChange(value)
-                                        return
-                                    }
-                                    field.onChange(0)
-                                }} />
-                            </FormControl>
-                            <FormMessage className="text-sm text-red-600">{form.formState.errors.price?.message?.toString()}</FormMessage>
-                        </FormItem>
+                </div>
+                <div className="col-span-2 flex flex-col gap-2">
+                    <label htmlFor="outlined-adornment-price">Product Price</label>
+                    <input
+                        type="number"
+                        step={0.01}
+                        id="outlined-adornment-price"
+                        className="text-black"
+                        {...register('price', {
+                            required: "Product Price is required.",
+                            min: { value: 1.00, message: "Product Price must be at least 1." },
+                            pattern: {
+                                value: /^\d+(\.\d{1,2})?$/,
+                                message: "Invalid price format. Use up to two decimal places."
+                            }
+                        })}
+                    />
+                    {errors.price?.message && (
+                        <small className="text-red-600">{errors.price.message.toString()}</small>
                     )}
-                />
-                <FormField
-                    control={form.control}
-                    name="size"
-                    render={({ field }) => (
-                        <FormItem className="col-span-2">
-                            <FormLabel className="text-base">Size</FormLabel>
-                            <FormControl>
-                                <Input placeholder="26,27,29" {...field} />
-                            </FormControl>
-                            <FormMessage className="text-sm text-red-600">{form.formState.errors.size?.message?.toString()}</FormMessage>
-                        </FormItem>
+                </div>
+                <div className="col-span-2 flex flex-col gap-2">
+                    <label htmlFor="outlined-adornment-size">Product Size</label>
+                    <input
+                        type="text"
+                        id="outlined-adornment-size"
+                        className="text-black"
+                        {...register('size', {
+                            required: "Product Size is required.",
+                        })}
+                    />
+                    {errors.size?.message && (
+                        <small className="text-red-600">{errors.size.message.toString()}</small>
                     )}
-                />
+                </div>
+
                 <button type="submit" className="col-span-2 bg-c-primary hover:bg-white hover:text-c-primary border-2 hover:border-c-primary text-white p-1 rounded-md" disabled={submiting}>
-                    {submiting?"Submitting":"Submit"}
+                    {submiting ? "Submitting" : "Submit"}
                 </button>
             </form>
-
-        </Form>
     )
 }

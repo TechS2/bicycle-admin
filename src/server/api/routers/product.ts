@@ -39,10 +39,41 @@ export const productRouter = createTRPCRouter({
           throw new TRPCError({ message: "Error in Saving Product", code: "BAD_REQUEST" })
         }
       }),
+  insertOneByFile:
+    protectedProcedure
+      .input(z.object({
+        name: z.string(),
+        description: z.string(),
+        image: z.string(),
+        price: z.string(),
+        size: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        console.log(input)
+        try {
+          const randomNumber = Math.floor(Math.random() * 999999) + 1;
+          const productCode = `P${randomNumber}`;
+          const result: UploadApiResponse = await cloudinary.uploader.upload(input.image);
+          if(!result) return 
+          input.image = result.secure_url
+          await ctx.db.product.create({
+            data: {
+              name: input.name,
+              description: input.description,
+              image: input.image,
+              price: input.price,
+              size: input.size,
+              code: productCode.substring(0, 6)
+            }
+          })
+        } catch (error) {
+          throw new TRPCError({ message: "Error in Saving Product", code: "BAD_REQUEST" })
+        }
+      }),
   editProduct:
     protectedProcedure
       .input(z.object({
-        productId:z.number(),
+        productId: z.number(),
         name: z.string(),
         description: z.string(),
         image: z.string(),
@@ -51,11 +82,11 @@ export const productRouter = createTRPCRouter({
       }))
       .mutation(async ({ ctx, input }) => {
         try {
-       
-  
+
+
           await ctx.db.product.update({
-            where:{
-              id:input.productId
+            where: {
+              id: input.productId
             },
             data: {
               name: input.name,
