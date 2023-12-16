@@ -24,12 +24,13 @@ export const productRouter = createTRPCRouter({
         try {
           const randomNumber = Math.floor(Math.random() * 999999) + 1;
           const productCode = `P${randomNumber}`;
-
+          const result: UploadApiResponse = await cloudinary.uploader.upload(input.image);
+          if(!result) return 
           await ctx.db.product.create({
             data: {
               name: input.name,
               description: input.description,
-              image: input.image,
+              image: result.secure_url,
               price: input.price,
               size: input.size,
               code: productCode.substring(0, 6)
