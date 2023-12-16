@@ -16,7 +16,7 @@ export async function POST(req: NextRequest, res: Response, next: NextFunction) 
   if (file instanceof File) {
 
     try {
-      const fileBuffer = Buffer.from(await file.arrayBuffer());
+      const fileArrayBuffer = await file.arrayBuffer();
       const result: UploadApiResponse = await new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
           (error, result) => {
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest, res: Response, next: NextFunction) 
                 resolve(result);
             }
           }
-        ).end(fileBuffer);
+        ).end(Buffer.from(fileArrayBuffer)); 
       });
       return NextResponse.json({ url: result.secure_url }, { status: 201 })
     } catch (error) {
