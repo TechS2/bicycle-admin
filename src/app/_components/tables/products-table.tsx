@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { addEuroSign, addInches } from '@/utils';
 import { api } from '@/trpc/react';
 import { debounce } from 'lodash';
-import { toast } from '@/components/ui/use-toast';
 import { Status } from '../status';
 import { useRouter } from 'next/navigation';
 import { EditProduct } from '../modal/edit-product';
@@ -19,44 +18,20 @@ export const ProductTable = () => {
     const { data } = api.product.getAllProducts.useQuery()
     const { mutate } = api.product.deleteProduct.useMutation({
         onSuccess: () => {
-            toast({
-                variant: "default",
-                title: "Sucess!!!",
-                description: "Product Deleted Successfullly.",
-                duration: 2000,
-                className: "bg-green-600 text-white"
-            })
+            //TODO: Toast
             router.refresh()
         },
         onError: () => {
-            toast({
-                variant: "destructive",
-                title: "Failed!!.",
-                description: "You can't delete this product.",
-                duration: 2000,
-                className: "bg-red-600 text-white"
-            })
+             //TODO: Toast
         }
     })
     const toogler = api.product.toogleStatus.useMutation({
         onSuccess: () => {
-            toast({
-                variant: "default",
-                title: "Sucess!!!",
-                description: "Product Updated Successfullly.",
-                duration: 2000,
-                className: "bg-green-600 text-white"
-            })
+            //TODO: Toast
             router.refresh()
         },
         onError: () => {
-            toast({
-                variant: "destructive",
-                title: "Failed!!.",
-                description: "Updation error.",
-                duration: 2000,
-                className: "bg-red-600 text-white"
-            })
+             //TODO: Toast
         }
     })
     const [page, setPage] = useState<number>(1)
