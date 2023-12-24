@@ -1,9 +1,10 @@
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 import "@/styles/globals.css";
+
 import { Provider } from "./provider";
 import { cookies } from "next/headers";
 
 import { TRPCReactProvider } from "@/trpc/react";
-import { Toaster } from "@/components/ui/toaster";
 
 
 export const metadata = {
@@ -23,7 +24,6 @@ export default function RootLayout({
         <TRPCReactProvider cookies={cookies().toString()}>
           <Provider>
             {children}
-            <Toaster />
           </Provider>
         </TRPCReactProvider>
       </body>

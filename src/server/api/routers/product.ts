@@ -25,43 +25,12 @@ export const productRouter = createTRPCRouter({
           const randomNumber = Math.floor(Math.random() * 999999) + 1;
           const productCode = `P${randomNumber}`;
           const result: UploadApiResponse = await cloudinary.uploader.upload(input.image);
-          if(!result) return 
+          if (!result) return
           await ctx.db.product.create({
             data: {
               name: input.name,
               description: input.description,
               image: result.secure_url,
-              price: input.price,
-              size: input.size,
-              code: productCode.substring(0, 6)
-            }
-          })
-        } catch (error) {
-          throw new TRPCError({ message: "Error in Saving Product", code: "BAD_REQUEST" })
-        }
-      }),
-  insertOneByFile:
-    protectedProcedure
-      .input(z.object({
-        name: z.string(),
-        description: z.string(),
-        image: z.string(),
-        price: z.string(),
-        size: z.string(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        console.log(input)
-        try {
-          const randomNumber = Math.floor(Math.random() * 999999) + 1;
-          const productCode = `P${randomNumber}`;
-          const result: UploadApiResponse = await cloudinary.uploader.upload(input.image);
-          if(!result) return 
-          input.image = result.secure_url
-          await ctx.db.product.create({
-            data: {
-              name: input.name,
-              description: input.description,
-              image: input.image,
               price: input.price,
               size: input.size,
               code: productCode.substring(0, 6)
@@ -82,17 +51,32 @@ export const productRouter = createTRPCRouter({
         size: z.string(),
       }))
       .mutation(async ({ ctx, input }) => {
+
         try {
+          if (input.image =="")
+            return await ctx.db.product.update({
+              where: {
+                id: input.productId
+              },
+              data: {
+                name: input.name,
+                description: input.description,
+                price: input.price,
+                size: input.size,
+              }
+            })
 
-
-          await ctx.db.product.update({
+          const result: UploadApiResponse = await cloudinary.uploader.upload(input.image);
+          console.log(result)
+          if (!result) return
+          return await ctx.db.product.update({
             where: {
               id: input.productId
             },
             data: {
               name: input.name,
               description: input.description,
-              image: input.image,
+              image:result.secure_url,
               price: input.price,
               size: input.size,
             }

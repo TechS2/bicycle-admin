@@ -1,12 +1,8 @@
 'use client'
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { api } from "@/trpc/react"
 import { FieldValues, useForm } from "react-hook-form"
 import { useState } from "react"
-import { max } from "lodash"
 
 
 export const ProductForm = () => {
@@ -38,7 +34,6 @@ export const ProductForm = () => {
         setSubmiting((prev) => !prev)
     }
     return (
-
             <form onSubmit={handleSubmit(formSubmitted)} className="grid grid-cols-2 gap-2 [&_input]:border-2 [&_textarea]:border-2 [&_input]:p-2 [&_textarea]:p-2">
                 <div className="col-span-2 flex flex-col gap-2">
                     <label htmlFor="outlined-adornment-name">Product Name</label>
