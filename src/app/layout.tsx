@@ -1,4 +1,6 @@
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 import "@/styles/globals.css";
+
 import { Provider } from "./provider";
 import { cookies } from "next/headers";
 
