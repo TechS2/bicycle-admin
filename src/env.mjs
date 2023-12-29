@@ -31,7 +31,8 @@ export const env = createEnv({
     PAYPAL_CLIENT:z.string(),
     PAYPAL_SECERT:z.string(),
     PAYPAL_MERCHANT_ID:z.string(),
-    PAYPAL_SANDBOX:z.string()
+    PAYPAL_API:z.string(),
+    BN_CODE:z.string(),
     // Add ` on ID and SECRET if you want to make sure they're not empty
   },
 
@@ -55,8 +56,9 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     PAYPAL_CLIENT:process.env.PAYPAL_CLIENT,
     PAYPAL_SECERT:process.env.PAYPAL_SECERT,
-    PAYPAL_MERCHANT_ID:process.env.PAYPAL_MERCHANT_ID,
-    PAYPAL_SANDBOX:process.env.PAYPAL_SANDBOX
+    PAYPAL_MERCHANT_ID:process.env.PAYPAL_SELLER_MERCHANT,
+    PAYPAL_API:process.env.PAYPAL_API,
+    BN_CODE:process.env.BN_CODE
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
