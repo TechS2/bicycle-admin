@@ -19,20 +19,21 @@ export const LoginForm = () => {
     const { register, formState: { errors }, handleSubmit } = useForm()
 
     const formSubmitted = async (data: FieldValues) => {
+        try {
+            setAlert(()=>false);
+            setSubmiting(()=>true);
+            const signInData = await signIn('credentials', {
+                email: data.email,
+                password: data.password,
+                redirect: false,
+            }); 
+            if (signInData?.error) setAlert(()=>true)
+            else router.push('/dashboard');
 
-        setSubmiting((prev) => !prev)
-        const signInData = await signIn('credentials', {
-            email: data.email,
-            password: data.password,
-            redirect: false,
-        })
-        setSubmiting((prev) => !prev)
-        console.log(signInData?.error)
-        if (signInData?.error)
-            setAlert(() => true)
-        if (!signInData?.error)
-            router.push("/dashboard")
-    }
+        } finally {
+            setSubmiting(()=>false);
+        }
+    };
 
     return (
         <form onSubmit={handleSubmit(formSubmitted)} className="grid grid-cols-2  [&_input]:bg-transparent  [&_input]:p-2 gap-1">
