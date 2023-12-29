@@ -29,6 +29,7 @@ export const paypalRouter = createTRPCRouter({
                     const data = 'grant_type=client_credentials';
                     const response = await axios.post(`${process.env.PAYPAL_API}/v1/oauth2/token`, data, config)
                     const access_token = response.data.access_token;
+                    console.log(access_token)
                     return access_token;
                 } catch (error) {
                     console.error('Error getting access token:', error);
@@ -67,7 +68,7 @@ export const paypalRouter = createTRPCRouter({
                             }
                         ],
                         "partner_config_override": {
-                            "return_url": "https://341e-103-103-43-236.ngrok-free.app/dashboard/success",
+                            "return_url": "https://bicycle-admin.vercel.app/dashboard/success",
                         }
                     };
 
