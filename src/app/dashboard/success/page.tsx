@@ -29,7 +29,7 @@ export default async function OnSuccess({ searchParams }: { searchParams: { merc
                 {isReady && (
                     <div className="mb-4">
                         <p className="text-green-600">You are ready to receive payments on the platform!</p>
-                        <img src="https://example.com/your-image.jpg" alt="Ready to receive payments" className="mt-4 max-w-full" />
+                        <img src="/success.png" alt="Ready to receive payments" className="mt-4 max-w-full" />
                     </div>
                 )}
                 {!isReady && !confirmation?.primary_email && (
