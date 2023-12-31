@@ -32,7 +32,6 @@
     "class-variance-authority": "^0.7.0",
     "cloudinary": "^1.41.0",
     "framer-motion": "^10.16.5",
-    "jotai": "^2.6.1",
     "lodash": "^4.17.21",
     "next": "^14.0.0",
     "next-auth": "^4.24.4",
