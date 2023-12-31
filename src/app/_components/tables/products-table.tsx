@@ -1,12 +1,9 @@
 'use client';
 
-
-import { useRef, useState } from 'react';
 import { FaPowerOff, FaTrashCan } from 'react-icons/fa6';
 import Image from 'next/image';
 import { addEuroSign, addInches } from '@/utils';
 import { api } from '@/trpc/react';
-import { debounce } from 'lodash';
 import { Status } from '../status';
 import { useRouter } from 'next/navigation';
 import { EditProduct } from '../modal/edit-product';
@@ -16,13 +13,12 @@ import { Product } from '@prisma/client';
 
 
 export const ProductTable = () => {
-
+    
     const router = useRouter()
     const { data } = api.product.getAllProducts.useQuery()
     const { mutate } = api.product.deleteProduct.useMutation({
         onSuccess: () => {
-            //TODO: Toast
-            router.refresh()
+            window.location.reload()
         },
         onError: () => {
             //TODO: Toast
@@ -31,7 +27,7 @@ export const ProductTable = () => {
     const toogler = api.product.toogleStatus.useMutation({
         onSuccess: () => {
             //TODO: Toast
-            router.refresh()
+            window.location.reload()
         },
         onError: () => {
             //TODO: Toast

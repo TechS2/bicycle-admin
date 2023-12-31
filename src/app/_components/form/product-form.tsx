@@ -10,6 +10,7 @@ export const ProductForm = () => {
     const {register,handleSubmit,formState:{errors},reset} = useForm()
     const { mutate } = api.product.insertOne.useMutation({
         onSuccess: () => {
+            setSubmiting((prev) => !prev)
             reset()
             window.location.reload()
         }
@@ -31,7 +32,6 @@ export const ProductForm = () => {
             image: fileBase64,
             size: data.size
         })
-        setSubmiting((prev) => !prev)
     }
     return (
             <form onSubmit={handleSubmit(formSubmitted)} className="grid grid-cols-2 gap-2 [&_input]:border-2 [&_textarea]:border-2 [&_input]:p-2 [&_textarea]:p-2">

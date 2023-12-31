@@ -16,7 +16,7 @@ export const ProductEditForm = ({ product }: { product: ProductProp }) => {
     const { mutate } = api.product.editProduct.useMutation({
         onSuccess: () => {
             reset()
-            router.refresh()
+            window.location.reload()
         }
     })
     const [submiting, setSubmiting] = useState<boolean>(false)
