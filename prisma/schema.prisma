@@ -64,6 +64,7 @@ model Order {
   payerId       String      @default("")
   paymentId     String      @default("")
   id            Int         @id @default(autoincrement())
+  arrivalDate   String      @default("")
   OrderItem     OrderItem[]
 }
 
@@ -102,6 +103,17 @@ model OrderItem {
   quantity  Int
   productId Int
   orderId   Int
+  Event     Event[]
   Order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   Product   Product @relation(fields: [productId], references: [id])
+}
+
+model Event {
+  id          Int       @id @default(autoincrement())
+  startDate   String
+  endDate     String
+  description String
+  title       String
+  orderItemId Int
+  OrderItem   OrderItem @relation(fields: [orderItemId], references: [id])
 }

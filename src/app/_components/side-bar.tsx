@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import {FaCube,FaBoxOpen,FaGear} from 'react-icons/fa6'
+import {FaCube,FaBoxOpen,FaGear, FaCalendar} from 'react-icons/fa6'
 import { LogOut } from "./log-out"
 
 export const SideBar = () => {
@@ -13,6 +13,9 @@ export const SideBar = () => {
                 </Link>
                 <Link href="/dashboard/order" className=" border-2 rounded-md font-sans flex gap-2 p-2">
                     <FaBoxOpen className="my-1" />Orders
+                </Link>
+                <Link href="/dashboard/calendar" className=" border-2 rounded-md font-sans flex gap-2 p-2">
+                    <FaCalendar className="my-1" />Calendar
                 </Link>
                 <Link href="/dashboard/setting" className=" border-2 rounded-md font-sans flex gap-2 p-2">
                     <FaGear className="my-1" />Settings

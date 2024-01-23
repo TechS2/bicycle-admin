@@ -33,6 +33,8 @@ export const ProductTable = () => {
             //TODO: Toast
         }
     })
+
+
     const deleteProduct = (productId: number) => mutate({ productId: productId })
 
     const Toogle = (productId: number, status: boolean) => toogler.mutate({ productId: productId, status: status })
@@ -71,7 +73,7 @@ export const ProductTable = () => {
     const sizeTemplate = (row: Product) => addInches(row.size)
 
     return (
-        <DataTable value={data} dataKey="id" paginator rows={5} rowsPerPageOptions={[5, 10]}
+        <DataTable  value={data} dataKey="id" paginator rows={5} rowsPerPageOptions={[5, 10]}
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products">
             <Column field="image" header="Image" body={imageTemplate} ></Column>

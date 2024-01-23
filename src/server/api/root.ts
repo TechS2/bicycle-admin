@@ -3,6 +3,7 @@ import { sellerRouter } from "./routers/registration";
 import { paypalRouter } from "./routers/paypal";
 import { productRouter } from "./routers/product";
 import { orderRouter } from "./routers/order";
+import { calendarRouter } from "./routers/calendar";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
     paypal:paypalRouter,
     product:productRouter,
     order:orderRouter,
+    calendar:calendarRouter,
 });
 
 // export type definition of API

@@ -1,9 +1,6 @@
 import { getServerAuthSession } from "@/server/auth"
 import { api } from "@/trpc/server"
 
-
-
-
 export default async function OnSuccess({ searchParams }: { searchParams: { merchantId: string, merchantIdInPayPal: string } }) {
 
     const session = await getServerAuthSession()

@@ -13,7 +13,7 @@ export default async function OrderDetail({ params }: { params: { orderId: strin
             <PaymenInfo captureId={orderDetail?.captureId} paymentEmail={orderDetail?.paymentEmail} personalEmail={orderDetail?.personalEmail} amount={orderDetail?.amount} />
             <CartDetail cartLength={orderDetail?.OrderItem.length} />
             <Heading title="Products" />
-            <div className="grid grid-cols-3 p-4 gap-2">
+            <div className="grid grid-cols-4 p-4 gap-2">
                 {
                     orderDetail?.OrderItem.map((item) => (
                         <Detail item={item}/>
