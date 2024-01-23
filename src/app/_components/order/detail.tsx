@@ -3,7 +3,7 @@ import Image from "next/image";
 import { SubDetail } from "./sub-detail";
 
 export const Detail = ({ item }: { item: any }) => (
-    <article className="col-span-1 flex-col gap-5 border-2 border-gray-200 p-3 rounded-xl hover:cursor-pointer hover:shadow-md" key={item.id}>
+    <article className="col-span-2 flex-col gap-5 border-2 border-gray-200 p-3 rounded-xl hover:cursor-pointer hover:shadow-md" key={item.id}>
         <div className="grid grid-cols-2 gap-2">
             <div className="col-span-1">
                 <SubDetail label="Quantity" value={item.quantity} />

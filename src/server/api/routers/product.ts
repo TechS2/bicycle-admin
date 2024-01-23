@@ -67,7 +67,6 @@ export const productRouter = createTRPCRouter({
             })
 
           const result: UploadApiResponse = await cloudinary.uploader.upload(input.image);
-          console.log(result)
           if (!result) return
           return await ctx.db.product.update({
             where: {

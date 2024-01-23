@@ -51,6 +51,7 @@ export const OrderTable = () => {
                 aria-label="cart detail table"
                 topContent={
                     <div className="bg-white flex flex-col gap-1 p-3 border-2 rounded-lg">
+                        <button className="bg-green-500 rounded-md p-3">Calendar</button>
                         <input onChange={(e) => debounceFilter(e.target.value)}
                             type="text"
                             placeholder="Search..."

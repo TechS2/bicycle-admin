@@ -1,12 +1,9 @@
 'use client';
 
-
-import { useRef, useState } from 'react';
 import { FaPowerOff, FaTrashCan } from 'react-icons/fa6';
 import Image from 'next/image';
 import { addEuroSign, addInches } from '@/utils';
 import { api } from '@/trpc/react';
-import { debounce } from 'lodash';
 import { Status } from '../status';
 import { useRouter } from 'next/navigation';
 import { EditProduct } from '../modal/edit-product';
@@ -16,13 +13,12 @@ import { Product } from '@prisma/client';
 
 
 export const ProductTable = () => {
-
+    
     const router = useRouter()
     const { data } = api.product.getAllProducts.useQuery()
     const { mutate } = api.product.deleteProduct.useMutation({
         onSuccess: () => {
-            //TODO: Toast
-            router.refresh()
+            window.location.reload()
         },
         onError: () => {
             //TODO: Toast
@@ -31,12 +27,14 @@ export const ProductTable = () => {
     const toogler = api.product.toogleStatus.useMutation({
         onSuccess: () => {
             //TODO: Toast
-            router.refresh()
+            window.location.reload()
         },
         onError: () => {
             //TODO: Toast
         }
     })
+
+
     const deleteProduct = (productId: number) => mutate({ productId: productId })
 
     const Toogle = (productId: number, status: boolean) => toogler.mutate({ productId: productId, status: status })
@@ -75,7 +73,7 @@ export const ProductTable = () => {
     const sizeTemplate = (row: Product) => addInches(row.size)
 
     return (
-        <DataTable value={data} dataKey="id" paginator rows={5} rowsPerPageOptions={[5, 10]}
+        <DataTable  value={data} dataKey="id" paginator rows={5} rowsPerPageOptions={[5, 10]}
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products">
             <Column field="image" header="Image" body={imageTemplate} ></Column>

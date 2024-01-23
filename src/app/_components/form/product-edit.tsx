@@ -2,21 +2,18 @@
 
 
 import { api } from "@/trpc/react"
-import { FieldValue, FieldValues, useForm } from "react-hook-form"
-import axios from 'axios'
+import {  FieldValues, useForm } from "react-hook-form"
 import { useState } from "react"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 
 
 export const ProductEditForm = ({ product }: { product: ProductProp }) => {
 
-    const router = useRouter()
     const { register, formState: { errors }, handleSubmit, reset } = useForm()
     const { mutate } = api.product.editProduct.useMutation({
         onSuccess: () => {
             reset()
-            router.refresh()
+            window.location.reload()
         }
     })
     const [submiting, setSubmiting] = useState<boolean>(false)
@@ -33,7 +30,6 @@ export const ProductEditForm = ({ product }: { product: ProductProp }) => {
 
     const formSubmitted = async (data: FieldValues) => {
         setSubmiting((prev) => !prev)
-        console.log( data.image[0])
         if (data.image[0]) {
             const base64 = await saveToCloud(data)
             mutate({

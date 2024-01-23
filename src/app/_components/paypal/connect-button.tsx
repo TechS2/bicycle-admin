@@ -13,9 +13,7 @@ export const ConnectButton = () => {
     const connect = () => {mutate()}
     return (
         <button className="bg-green-700 hover:bg-white hover:text-green-700 border-2 disabled:bg-green-700 disabled:text-white flex justify-evenly text-white text-xl  rounded-lg p-2" onClick={connect} >
-            <span >
                 Connect
-            </span>
         </button>
     )
 }
