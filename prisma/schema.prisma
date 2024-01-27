@@ -115,5 +115,6 @@ model Event {
   description String
   title       String
   orderItemId Int
+  isAdded     Boolean   @default(false)
   OrderItem   OrderItem @relation(fields: [orderItemId], references: [id])
 }

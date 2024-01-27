@@ -1,6 +1,8 @@
 import { hash } from "bcrypt";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import z from 'zod'
+import { testing } from "googleapis/build/src/apis/testing";
+import { cookies } from "next/headers";
 
 export const sellerRouter = createTRPCRouter({
 
@@ -44,22 +46,26 @@ export const sellerRouter = createTRPCRouter({
             }),
     updatePassword:
         protectedProcedure
-        .input(z.object({
-            updatedPassword:z.string(),
-            userName:z.string()
-        }))
-        .mutation(async ({ctx,input})=>{
-            
-            const encyrptedPassword = await hash(input.updatedPassword,10)
+            .input(z.object({
+                updatedPassword: z.string(),
+                userName: z.string()
+            }))
+            .mutation(async ({ ctx, input }) => {
 
-            await ctx.db.sellerInfo.update({
-                where:{
-                    userName:input.userName
-                },
-                data:{
-                    password:encyrptedPassword
-                }
+                const encyrptedPassword = await hash(input.updatedPassword, 10)
+
+                await ctx.db.sellerInfo.update({
+                    where: {
+                        userName: input.userName
+                    },
+                    data: {
+                        password: encyrptedPassword
+                    }
+                })
+            }),
+    testing:
+        protectedProcedure
+            .query(() => {
+                console.log("Coookies in different", cookies().getAll())
             })
-        })
-
 })
