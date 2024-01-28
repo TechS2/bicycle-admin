@@ -24,3 +24,11 @@ type MerchantWebhook = {
     price: string
     size: string
 }
+
+type GoogleTokenProp = {
+  cg_access_token:string
+  cg_refresh_token:string
+  cg_scope:string
+  cg_token_type:string
+  cg_expiry_date:number|string
+}

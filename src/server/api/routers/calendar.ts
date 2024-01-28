@@ -33,14 +33,22 @@ export const calendarRouter = createTRPCRouter({
             .input(z.object({
                 cookie: z.string()
             }))
-            .query(async ({ ctx, input }) => {
+            .query(async ({ ctx, input }): Promise<GoogleTokenProp | null> => {
                 try {
                     const response = await authClient.getToken(input.cookie)
                     authClient.setCredentials(response.tokens)
-                    return response.tokens
+
+                    const googleTokens: GoogleTokenProp = {
+                        cg_access_token: response.tokens.access_token??"",
+                        cg_refresh_token:response.tokens.refresh_token??"",
+                        cg_scope: response.tokens.scope??"",
+                        cg_token_type: response.tokens.token_type??"",
+                        cg_expiry_date: response.tokens.expiry_date??0,
+                    }
+                    return googleTokens
                 } catch (error) {
                     if (error instanceof GaxiosError)
-                        console.log("Error",error.response?.data)
+                        console.log("Error", error.response?.data)
                     return null
                 }
             }),

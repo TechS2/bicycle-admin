@@ -5,7 +5,8 @@ import { api } from "@/trpc/react"
 import { useEffect } from "react"
 import { getCookie, getCookies, setCookie } from 'cookies-next';
 import Link from "next/link";
-import { create } from "@/app/actions";
+import { create } from "@/app/_actions/action";
+
 
 
 export const SessionSet = ({ token }: { token: string }) => {
@@ -13,7 +14,6 @@ export const SessionSet = ({ token }: { token: string }) => {
      const { data } = api.calendar.getUserInfo.useQuery({ cookie: token })
 
     useEffect(() => {
-        // sessionStorage.setItem('calendar_token', token)
         if (data) {
             console.log("Setting")
             create(data)
