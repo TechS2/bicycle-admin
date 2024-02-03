@@ -6,6 +6,7 @@ import z from 'zod'
 import { authClient } from "@/server/_config/oauthClient";
 import { calendar } from "@/server/_config/calendar";
 import { GaxiosError } from "gaxios";
+import { cookies } from "next/headers";
 export const calendarRouter = createTRPCRouter({
     getCalendar:
         publicProcedure
@@ -29,7 +30,7 @@ export const calendarRouter = createTRPCRouter({
                 return url
             }),
     getUserInfo:
-        protectedProcedure
+        publicProcedure
             .input(z.object({
                 cookie: z.string()
             }))
@@ -39,13 +40,58 @@ export const calendarRouter = createTRPCRouter({
                     authClient.setCredentials(response.tokens)
 
                     const googleTokens: GoogleTokenProp = {
-                        cg_access_token: response.tokens.access_token??"",
-                        cg_refresh_token:response.tokens.refresh_token??"",
-                        cg_scope: response.tokens.scope??"",
-                        cg_token_type: response.tokens.token_type??"",
-                        cg_expiry_date: response.tokens.expiry_date??0,
+                        cg_access_token: response.tokens.access_token ?? "",
+                        cg_refresh_token: response.tokens.refresh_token ?? "",
+                        cg_scope: response.tokens.scope ?? "",
+                        cg_token_type: response.tokens.token_type ?? "",
+                        cg_expiry_date: response.tokens.expiry_date ?? 0,
                     }
+                    await ctx.db.googleToken.create({
+                        data: {
+                            refreshToken: googleTokens.cg_refresh_token
+                        }
+                    })
                     return googleTokens
+                } catch (error) {
+                    if (error instanceof GaxiosError)
+                        console.log("Error", error.response?.data)
+                    return null
+                }
+            }),
+    getInfoFromRefreshToken:
+        publicProcedure
+            .query(async ({ ctx }) => {
+                try {
+
+                    const refreshToken = cookies().get('cg_refresh_token')?.value
+                    if (!refreshToken) return
+                    authClient.setCredentials({
+                        refresh_token: refreshToken
+                    })
+                    const response = await authClient.getAccessToken()
+                    const googleTokens: GoogleTokenProp = {
+                        cg_access_token: response.res?.data.access_token ?? "",
+                        cg_refresh_token: response.res?.data.refresh_token ?? "",
+                        cg_scope: response.res?.data.scope ?? "",
+                        cg_token_type: response.res?.data.token_type ?? "",
+                        cg_expiry_date: response.res?.data.expiry_date ?? 0,
+                    }
+                    const entries = Object.entries(googleTokens)
+                    for (const [key, value] of entries) {
+                        if (key != 'cg_expiry_date') {
+                            console.log('setting cookies')
+                            cookies().set(key, value.toString(), {
+                                secure: true,
+                                httpOnly: true,
+                                domain: 'localhost',
+                                path: '/',
+                                priority: 'medium',
+                                expires: key != 'cg_refresh_token' ? +googleTokens.cg_expiry_date : new Date(Date.now() + 1000 * 24 * 60 * 60 * 1000),
+                            })
+                        }
+
+                    }
+                    return "something"
                 } catch (error) {
                     if (error instanceof GaxiosError)
                         console.log("Error", error.response?.data)
@@ -87,9 +133,7 @@ export const calendarRouter = createTRPCRouter({
                             ],
                         },
                     };
-                    // calendar.events.insert({
-                    //     calendarId:'primary',     
-                    // })
+
                     authClient.setCredentials(JSON.parse(input.tokens))
                     const now = new Date()
                     const oneDayLater = new Date(now.getTime() + 24 * 60 * 60 * 1000)
@@ -115,5 +159,18 @@ export const calendarRouter = createTRPCRouter({
                 } catch (error) {
                     console.log(error)
                 }
+            }),
+    displayCalendar:
+        protectedProcedure
+            .query(async ({ ctx }) => {
+
+                try {
+
+
+                } catch (error) {
+                    if (error instanceof GaxiosError)
+                        console.log(error.message)
+                }
             })
+
 })

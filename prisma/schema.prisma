@@ -118,3 +118,8 @@ model Event {
   isAdded     Boolean   @default(false)
   OrderItem   OrderItem @relation(fields: [orderItemId], references: [id])
 }
+
+model GoogleToken {
+  tokenId      Int    @id @default(autoincrement())
+  refreshToken String @default("")
+}

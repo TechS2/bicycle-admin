@@ -11,15 +11,13 @@ import { create } from "@/app/_actions/action";
 
 export const SessionSet = ({ token }: { token: string }) => {
 
-     const { data } = api.calendar.getUserInfo.useQuery({ cookie: token })
-
-    useEffect(() => {
-        if (data) {
-            console.log("Setting")
-            create(data)
-            localStorage.setItem('google_token', JSON.stringify(data))
-        }
-    }, [data])
+    const { data } = api.calendar.getUserInfo.useQuery({ cookie: token })
+        useEffect(() => {
+            if (data) {
+                create(data)
+                localStorage.setItem('google_token', JSON.stringify(data))
+            }
+        }, [data])
     // if (tokens) {
     //     const { data } = api.calendar.createEvent.useQuery({ tokens: tokens })
     //     console.log(data)

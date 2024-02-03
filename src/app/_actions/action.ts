@@ -5,7 +5,7 @@ export async function create(googleToken: GoogleTokenProp) {
 
     const entries = Object.entries(googleToken);
     for (let [key, value] of entries) {
-        
+        console.log(key)
         if (key != 'cg_expiry_date')
             cookies().set(key, value.toString(), {
                 secure: true,
@@ -17,16 +17,6 @@ export async function create(googleToken: GoogleTokenProp) {
             })
 
     }
-    // const response = cookies().set('calendar_token', JSON.stringify(code), {
-    //     secure: true,
-    //     httpOnly: true,
-    //     domain: 'localhost',
-    //     path: '/',
-    //     priority: 'medium',
-    //     expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-    // })
-
-
 }
 
 
